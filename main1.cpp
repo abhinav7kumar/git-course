@@ -21,4 +21,11 @@ int main() {
     } while (choice == 'y' || choice == 'Y');
 
     return 0;
+
+    do{
+        cout << "Enter a name: ";
+        cin >> name;
+
+        cout << "Do you want to enter another name? (y/n): ";
+    }
 }
