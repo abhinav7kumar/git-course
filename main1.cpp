@@ -5,6 +5,12 @@ int main() {
     int num;
     cout << "Enter a number: ";
     cin >> num;
-    cout << "You entered: " << num;
+
+    if (num % 2 == 0) {
+        cout << num << " is Even";
+    } else {
+        cout << num << " is Odd";
+    }
+
     return 0;
 }
