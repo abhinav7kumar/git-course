@@ -27,5 +27,6 @@ int main() {
         cin >> name;
 
         cout << "Do you want to enter another name? (y/n): ";
+        cin >> choice;
     }
 }
