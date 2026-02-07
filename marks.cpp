@@ -8,8 +8,16 @@ int main() {
 
     if (marks >= 40) {
         cout << "Result: Pass" << endl;
+
+        if (marks >= 75)
+            cout << "Grade: A" << endl;
+        else if (marks >= 60)
+            cout << "Grade: B" << endl;
+        else
+            cout << "Grade: C" << endl;
     } else {
         cout << "Result: Fail" << endl;
+        cout << "Grade: F" << endl;
     }
 
     return 0;
