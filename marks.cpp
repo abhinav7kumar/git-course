@@ -1,11 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-    int marks;
-    cout << "Enter student marks: ";
-    cin >> marks;
-
+void calculateResult(int marks) {
     if (marks >= 40) {
         cout << "Result: Pass" << endl;
 
@@ -19,6 +15,13 @@ int main() {
         cout << "Result: Fail" << endl;
         cout << "Grade: F" << endl;
     }
+}
 
+int main() {
+    int marks;
+    cout << "Enter student marks: ";
+    cin >> marks;
+
+    calculateResult(marks);
     return 0;
 }
