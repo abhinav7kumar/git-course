@@ -23,3 +23,13 @@ int main() {
     }
     return 0;
 }
+            cout << "Enter task number to delete: ";
+            cin >> index;
+
+            if (index > 0 && index <= tasks.size()) {
+                tasks.erase(tasks.begin() + index - 1);
+                cout << "Task deleted successfully.\n";
+            } else {
+                cout << "Invalid task number.\n";
+            }
+       
