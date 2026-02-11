@@ -4,31 +4,36 @@ using namespace std;
 
 struct Task {
     string name;
-    bool completed;
+    bool completed = false;
 };
+
+void showTasks(const vector<Task>& tasks) {
+    if (tasks.empty()) {
+        cout << "No tasks available.\n";
+        return;
+    }
+    for (int i = 0; i < tasks.size(); i++) {
+        cout << i + 1 << ". " << tasks[i].name
+             << (tasks[i].completed ? " [Done]" : " [Pending]") << endl;
+    }
+}
 
 int main() {
     vector<Task> tasks;
     int choice;
 
     do {
-        cout << "\n1. Add\n2. View\n3. Complete\n4. Delete\n5. Exit\nChoice: ";
+        cout << "\n1.Add  2.View  3.Complete  4.Delete  5.Exit\nChoice: ";
         cin >> choice;
         cin.ignore();
 
         if (choice == 1) {
             Task t;
-            cout << "Enter task: ";
+            cout << "Task name: ";
             getline(cin, t.name);
-            t.completed = false;
             tasks.push_back(t);
         }
-        else if (choice == 2) {
-            for (int i = 0; i < tasks.size(); i++) {
-                cout << i + 1 << ". " << tasks[i].name
-                     << (tasks[i].completed ? " [Done]" : " [Pending]") << endl;
-            }
-        }
+        else if (choice == 2) showTasks(tasks);
         else if (choice == 3) {
             int n;
             cin >> n;
