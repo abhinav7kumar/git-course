@@ -12,7 +12,7 @@ int main() {
     int choice;
 
     do {
-        cout << "\n1. Add\n2. View\n3. Complete Task\n4. Exit\nChoice: ";
+        cout << "\n1. Add\n2. View\n3. Complete\n4. Delete\n5. Exit\nChoice: ";
         cin >> choice;
         cin.ignore();
 
@@ -31,12 +31,17 @@ int main() {
         }
         else if (choice == 3) {
             int n;
-            cout << "Enter task number: ";
             cin >> n;
             if (n > 0 && n <= tasks.size())
                 tasks[n - 1].completed = true;
         }
-    } while (choice != 4);
+        else if (choice == 4) {
+            int n;
+            cin >> n;
+            if (n > 0 && n <= tasks.size())
+                tasks.erase(tasks.begin() + n - 1);
+        }
+    } while (choice != 5);
 
     return 0;
 }
