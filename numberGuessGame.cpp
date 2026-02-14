@@ -1,11 +1,15 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 int main() {
-    int secret = 7, guess, attempts = 0;
+    srand(time(0));
+    int secret = rand() % 10 + 1;
+    int guess, attempts = 0;
 
     while (true) {
-        cout << "Guess the number: ";
+        cout << "Guess (1-10): ";
         cin >> guess;
         attempts++;
 
