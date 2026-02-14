@@ -6,19 +6,27 @@ using namespace std;
 int main() {
     srand(time(0));
     int secret = rand() % 10 + 1;
-    int guess, attempts = 0;
+    int guess;
+    int attempts = 0;
+    const int maxAttempts = 5;
 
-    while (attempts < 5) {
-        cout << "Guess (1-10): ";
+    cout << "Number Guessing Game (1-10)\n";
+
+    while (attempts < maxAttempts) {
+        cout << "Attempt " << attempts + 1 << ": ";
         cin >> guess;
         attempts++;
 
         if (guess == secret) {
-            cout << "You win!";
+            cout << " You guessed it right!\n";
             return 0;
+        } else if (guess > secret) {
+            cout << "Too high!\n";
+        } else {
+            cout << "Too low!\n";
         }
     }
 
-    cout << "Game Over! Number was " << secret;
+    cout << "Game Over! The number was " << secret;
     return 0;
 }
