@@ -2,17 +2,16 @@
 using namespace std;
 
 int main() {
-    int secret = 7, guess;
+    int secret = 7, guess, attempts = 0;
 
     while (true) {
         cout << "Guess the number: ";
         cin >> guess;
+        attempts++;
 
         if (guess == secret) {
-            cout << "Correct!";
+            cout << "Correct in " << attempts << " attempts!";
             break;
-        } else {
-            cout << "Try again\n";
         }
     }
     return 0;
