@@ -8,5 +8,10 @@ int main() {
     cout << "Guess the number: ";
     cin >> guess;
 
+    if (guess == secret)
+        cout << "Correct!";
+    else
+        cout << "Wrong!";
+
     return 0;
 }
