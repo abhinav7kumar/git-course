@@ -6,20 +6,19 @@ using namespace std;
 int main() {
     srand(time(0));
     int secret = rand() % 10 + 1;
-    int guess;
+    int guess, attempts = 0;
 
-    while (true) {
+    while (attempts < 5) {
         cout << "Guess (1-10): ";
         cin >> guess;
+        attempts++;
 
         if (guess == secret) {
-            cout << "Correct!";
-            break;
-        } else if (guess > secret) {
-            cout << "Too high\n";
-        } else {
-            cout << "Too low\n";
+            cout << "You win!";
+            return 0;
         }
     }
+
+    cout << "Game Over! Number was " << secret;
     return 0;
 }
