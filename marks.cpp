@@ -1,21 +1,25 @@
 #include <iostream>
 using namespace std;
 
-char calculateGrade(int marks) {
-    if (marks >= 75) return 'A';
-    if (marks >= 60) return 'B';
-    if (marks >= 40) return 'C';
-    return 'F';
-}
-
 int main() {
     int marks;
-    cout << "Enter student marks: ";
+    cout << "Enter marks: ";
     cin >> marks;
 
-    char grade = calculateGrade(marks);
-    cout << "Grade: " << grade << endl;
-    cout << "Result: " << (grade != 'F' ? "Pass" : "Fail") << endl;
+    char grade;
+    if (marks >= 75) grade = 'A';
+    else if (marks >= 60) grade = 'B';
+    else if (marks >= 40) grade = 'C';
+    else grade = 'F';
+
+    cout << "Result: " << (grade == 'F' ? "Fail" : "Pass") << endl;
+
+    switch (grade) {
+        case 'A': cout << "Grade: A\n"; break;
+        case 'B': cout << "Grade: B\n"; break;
+        case 'C': cout << "Grade: C\n"; break;
+        default: cout << "Grade: F\n";
+    }
 
     return 0;
 }
