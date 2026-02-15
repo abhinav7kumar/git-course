@@ -1,23 +1,24 @@
 #include <iostream>
 using namespace std;
 
-void calculateResult(int marks) {
-    if (marks >= 40)
-        cout << "Pass";
+void showResult(int marks) {
+    cout << "Marks: " << marks << endl;
+
+    if (marks >= 75)
+        cout << "Result: Pass | Grade: A\n";
+    else if (marks >= 60)
+        cout << "Result: Pass | Grade: B\n";
+    else if (marks >= 40)
+        cout << "Result: Pass | Grade: C\n";
     else
-        cout << "Fail";
+        cout << "Result: Fail | Grade: F\n";
 }
 
 int main() {
-    int students;
-    cout << "Enter number of students: ";
-    cin >> students;
+    int marks;
+    cout << "Enter student marks: ";
+    cin >> marks;
 
-    for (int i = 1; i <= students; i++) {
-        int marks;
-        cout << "\nEnter marks for student " << i << ": ";
-        cin >> marks;
-        calculateResult(marks);
-    }
+    showResult(marks);
     return 0;
 }
