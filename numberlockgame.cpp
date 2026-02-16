@@ -37,3 +37,21 @@ int main() {
 
     return 0;
 }
+
+int main() {
+    int secret = 5;
+    int guess;
+
+    while (true) {
+        cout << "Enter your guess: ";
+        cin >> guess;
+
+        if (guess == secret) {
+            cout << "Correct! Puzzle unlocked.";
+            break;
+        } else {
+            cout << "Wrong! Try again.\n";
+        }
+    }
+    return 0;
+}
