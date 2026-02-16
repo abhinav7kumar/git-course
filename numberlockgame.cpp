@@ -12,3 +12,13 @@ int main() {
     cout << "Guess the secret number (1-10)." << endl;
     return 0;
 }
+
+int main() {
+    int secret = 5;
+    int guess;
+
+    cout << "Enter your guess: ";
+    cin >> guess;
+
+    return 0;
+}
