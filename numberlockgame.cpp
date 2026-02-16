@@ -22,3 +22,18 @@ int main() {
 
     return 0;
 }
+
+int main() {
+    int secret = 5;
+    int guess;
+
+    cout << "Enter your guess: ";
+    cin >> guess;
+
+    if (guess == secret)
+        cout << "Correct! Puzzle unlocked.";
+    else
+        cout << "Wrong guess.";
+
+    return 0;
+}
