@@ -7,10 +7,12 @@ struct Student {
 };
 
 int main() {
-    Student s;
-    cout << "Enter Roll: ";
-    cin >> s.roll;
-    cout << "Enter Name: ";
-    cin >> s.name;
+    Student s[2];
+    for (int i = 0; i < 2; i++) {
+        cout << "Enter Roll: ";
+        cin >> s[i].roll;
+        cout << "Enter Name: ";
+        cin >> s[i].name;
+    }
     return 0;
 }
