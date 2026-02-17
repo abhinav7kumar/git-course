@@ -1,12 +1,16 @@
 #include <iostream>
 using namespace std;
 
-int main() {
+struct Student {
     int roll;
     string name;
+};
+
+int main() {
+    Student s;
     cout << "Enter Roll: ";
-    cin >> roll;
+    cin >> s.roll;
     cout << "Enter Name: ";
-    cin >> name;
+    cin >> s.name;
     return 0;
 }
