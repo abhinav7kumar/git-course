@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 struct Student {
@@ -6,30 +7,26 @@ struct Student {
     string name;
 };
 
-int main() {
-    Student s[2];
-    for (int i = 0; i < 2; i++) {
-        cout << "Enter Roll: ";
-        cin >> s[i].roll;
-        cout << "Enter Name: ";
-        cin >> s[i].name;
-    }
-    return 0;
-}#include <iostream>
-using namespace std;
+vector<Student> students;
 
-struct Student {
-    int roll;
-    string name;
-};
+void addStudent() {
+    Student s;
+    cin >> s.roll >> s.name;
+    students.push_back(s);
+}
+
+void viewStudents() {
+    for (auto s : students)
+        cout << s.roll << " " << s.name << endl;
+}
 
 int main() {
-    Student s[2];
-    for (int i = 0; i < 2; i++) {
-        cout << "Enter Roll: ";
-        cin >> s[i].roll;
-        cout << "Enter Name: ";
-        cin >> s[i].name;
-    }
+    int choice;
+    do {
+        cout << "\n1.Add 2.View 3.Exit\n";
+        cin >> choice;
+        if (choice == 1) addStudent();
+        else if (choice == 2) viewStudents();
+    } while (choice != 3);
     return 0;
 }
