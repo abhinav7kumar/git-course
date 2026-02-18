@@ -2,18 +2,33 @@
 using namespace std;
 
 int main() {
-    float balance = 5000, withdraw;
+    float balance = 5000;
+    int choice;
+    float amount;
 
-    cout << "Enter amount to withdraw: ";
-    cin >> withdraw;
+    do {
+        cout << "\n1. Deposit\n2. Withdraw\n3. Check Balance\n4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
 
-    if (withdraw <= balance) {
-        balance -= withdraw;
-        cout << "Withdrawal successful.\n";
-    } else {
-        cout << "Insufficient balance.\n";
-    }
+        if (choice == 1) {
+            cout << "Enter amount: ";
+            cin >> amount;
+            balance += amount;
+        }
+        else if (choice == 2) {
+            cout << "Enter amount: ";
+            cin >> amount;
+            if (amount <= balance)
+                balance -= amount;
+            else
+                cout << "Insufficient balance\n";
+        }
+        else if (choice == 3) {
+            cout << "Balance: " << balance << endl;
+        }
 
-    cout << "Current balance: " << balance << endl;
+    } while (choice != 4);
+
     return 0;
 }
