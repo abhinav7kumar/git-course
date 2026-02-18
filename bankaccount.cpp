@@ -2,6 +2,13 @@
 using namespace std;
 
 int main() {
-    cout << "Welcome to Simple Bank System";
+    string name;
+    int accountNumber;
+
+    cout << "Enter account holder name: ";
+    cin >> name;
+    cout << "Enter account number: ";
+    cin >> accountNumber;
+
     return 0;
 }
