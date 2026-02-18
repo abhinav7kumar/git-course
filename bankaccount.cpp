@@ -2,15 +2,13 @@
 using namespace std;
 
 int main() {
-    string name;
-    int accountNumber;
-    float balance = 0;
+    float balance = 0, deposit;
 
-    cout << "Enter name: ";
-    cin >> name;
-    cout << "Enter account number: ";
-    cin >> accountNumber;
+    cout << "Enter amount to deposit: ";
+    cin >> deposit;
 
-    cout << "Initial balance: " << balance << endl;
+    balance += deposit;
+    cout << "Updated balance: " << balance << endl;
+
     return 0;
 }
