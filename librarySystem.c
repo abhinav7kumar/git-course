@@ -6,13 +6,15 @@ struct Book {
 };
 
 int main() {
-    struct Book b;
+    struct Book books[2];
+    int i;
 
-    printf("Enter Book ID: ");
-    scanf("%d", &b.id);
-
-    printf("Enter Book Title: ");
-    scanf("%s", b.title);
+    for(i = 0; i < 2; i++) {
+        printf("Enter ID: ");
+        scanf("%d", &books[i].id);
+        printf("Enter Title: ");
+        scanf("%s", books[i].title);
+    }
 
     return 0;
 }
