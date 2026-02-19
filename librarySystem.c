@@ -1,9 +1,14 @@
 #include <stdio.h>
 
 int main() {
-    int choice;
-    printf("1. Add Book\n2. View Books\n3. Exit\n");
-    printf("Enter choice: ");
-    scanf("%d", &choice);
+    int bookID;
+    char title[50];
+
+    printf("Enter Book ID: ");
+    scanf("%d", &bookID);
+
+    printf("Enter Book Title: ");
+    scanf("%s", title);
+
     return 0;
 }
