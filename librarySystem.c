@@ -1,14 +1,18 @@
 #include <stdio.h>
 
-int main() {
-    int bookID;
+struct Book {
+    int id;
     char title[50];
+};
+
+int main() {
+    struct Book b;
 
     printf("Enter Book ID: ");
-    scanf("%d", &bookID);
+    scanf("%d", &b.id);
 
     printf("Enter Book Title: ");
-    scanf("%s", title);
+    scanf("%s", b.title);
 
     return 0;
 }
