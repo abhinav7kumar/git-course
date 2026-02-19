@@ -20,7 +20,18 @@ void viewBooks() {
         printf("%d - %s\n", books[i].id, books[i].title);
     }
 }
-
+void deleteBook(int id) {
+    int i, j;
+    for(i = 0; i < count; i++) {
+        if(books[i].id == id) {
+            for(j = i; j < count - 1; j++) {
+                books[j] = books[j + 1];
+            }
+            count--;
+            break;
+        }
+    }
+}
 int main() {
     int choice;
     do {
