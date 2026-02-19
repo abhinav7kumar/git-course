@@ -32,6 +32,16 @@ void deleteBook(int id) {
         }
     }
 }
+void searchBook(int id) {
+    int i;
+    for(i = 0; i < count; i++) {
+        if(books[i].id == id) {
+            printf("Found: %s\n", books[i].title);
+            return;
+        }
+    }
+    printf("Book not found\n");
+}
 int main() {
     int choice;
     do {
