@@ -5,12 +5,32 @@ struct Book {
     char title[50];
 };
 
-void addBook(struct Book *b) {
-    scanf("%d %s", &b->id, b->title);
+struct Book books[5];
+int count = 0;
+
+void addBook() {
+    printf("Enter ID and Title: ");
+    scanf("%d %s", &books[count].id, books[count].title);
+    count++;
+}
+
+void viewBooks() {
+    int i;
+    for(i = 0; i < count; i++) {
+        printf("%d - %s\n", books[i].id, books[i].title);
+    }
 }
 
 int main() {
-    struct Book b;
-    addBook(&b);
+    int choice;
+    do {
+        printf("\n1.Add 2.View 3.Exit\n");
+        scanf("%d", &choice);
+
+        if(choice == 1) addBook();
+        else if(choice == 2) viewBooks();
+
+    } while(choice != 3);
+
     return 0;
 }
