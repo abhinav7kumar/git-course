@@ -1,20 +1,12 @@
 #include <stdio.h>
 
-struct Book {
-    int id;
-    char title[50];
-};
-
 int main() {
-    struct Book books[2];
-    int i;
+    int choice;
 
-    for(i = 0; i < 2; i++) {
-        printf("Enter ID: ");
-        scanf("%d", &books[i].id);
-        printf("Enter Title: ");
-        scanf("%s", books[i].title);
-    }
+    do {
+        printf("\n1.Add 2.View 3.Exit\n");
+        scanf("%d", &choice);
+    } while(choice != 3);
 
     return 0;
 }
