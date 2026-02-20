@@ -4,9 +4,12 @@
 
 int width = 20, height = 20;
 int gameOver;
+int x, y;
 
 void setup() {
     gameOver = 0;
+    x = width / 2;
+    y = height / 2;
 }
 
 void draw() {
@@ -18,8 +21,12 @@ void draw() {
 
     for(int i = 0; i < height; i++) {
         printf("#");
-        for(int j = 0; j < width; j++)
-            printf(" ");
+        for(int j = 0; j < width; j++) {
+            if(i == y && j == x)
+                printf("O");
+            else
+                printf(" ");
+        }
         printf("#\n");
     }
 
