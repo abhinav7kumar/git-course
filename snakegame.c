@@ -11,6 +11,17 @@ void setup() {
     x = width / 2;
     y = height / 2;
 }
+void input() {
+    if(kbhit()) {
+        switch(getch()) {
+            case 'a': dir = LEFT; break;
+            case 'd': dir = RIGHT; break;
+            case 'w': dir = UP; break;
+            case 's': dir = DOWN; break;
+            case 'x': gameOver = 1; break;
+        }
+    }
+}
 
 void draw() {
     system("cls");
