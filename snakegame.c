@@ -62,6 +62,8 @@ void logic() {
         case DOWN: y++; break;
         default: break;
     }
+    if(x >= width || x < 0 || y >= height || y < 0)
+    gameOver = 1;
 }
     return 0;
 }
