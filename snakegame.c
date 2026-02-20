@@ -40,5 +40,17 @@ int main() {
     while(!gameOver) {
         draw();
     }
+    enum Direction {STOP = 0, LEFT, RIGHT, UP, DOWN};
+enum Direction dir;
+
+void logic() {
+    switch(dir) {
+        case LEFT: x--; break;
+        case RIGHT: x++; break;
+        case UP: y--; break;
+        case DOWN: y++; break;
+        default: break;
+    }
+}
     return 0;
 }
