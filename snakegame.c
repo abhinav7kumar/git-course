@@ -5,11 +5,14 @@
 int width = 20, height = 20;
 int gameOver;
 int x, y;
+int foodX, foodY;
 
 void setup() {
     gameOver = 0;
     x = width / 2;
     y = height / 2;
+    foodX = rand() % width;
+foodY = rand() % height;
 }
 void input() {
     if(kbhit()) {
@@ -44,6 +47,8 @@ void draw() {
     for(int i = 0; i < width + 2; i++)
         printf("#");
     printf("\n");
+    else if(i == foodY && j == foodX)
+    printf("F");
 }
 
 int main() {
