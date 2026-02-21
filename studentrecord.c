@@ -14,11 +14,12 @@ char calculateGrade(float marks) {
 }
 
 void menu() {
-    printf("\n===== Student Record System =====\n");
-    printf("1. Add Student\n");
-    printf("2. View Students\n");
-    printf("3. Exit\n");
-    printf("Enter choice: ");
+   printf("1. Add Student\n");
+printf("2. View Students\n");
+printf("3. Search Student\n");
+printf("4. Update Student\n");
+printf("5. Delete Student\n");
+printf("6. Exit\n");
 }
 void addStudent() {
     FILE *fp = fopen("students.txt", "a");
