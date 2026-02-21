@@ -14,7 +14,22 @@ void menu() {
     printf("3. Exit\n");
     printf("Enter choice: ");
 }
+void addStudent() {
+    FILE *fp = fopen("students.txt", "a");
+    struct Student s;
 
+    printf("Enter ID: ");
+    scanf("%d", &s.id);
+    printf("Enter Name: ");
+    scanf(" [^\n]", s.name);
+    printf("Enter Marks: ");
+    scanf("%f", &s.marks);
+
+    fprintf(fp, "%d %s %.2f\n", s.id, s.name, s.marks);
+    fclose(fp);
+
+    printf("Student Added Successfully!\n");
+}
 int main() {
     int choice;
 
