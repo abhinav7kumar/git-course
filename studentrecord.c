@@ -6,6 +6,12 @@ struct Student {
     char name[50];
     float marks;
 };
+char calculateGrade(float marks) {
+    if (marks >= 90) return 'A';
+    else if (marks >= 75) return 'B';
+    else if (marks >= 50) return 'C';
+    else return 'F';
+}
 
 void menu() {
     printf("\n===== Student Record System =====\n");
