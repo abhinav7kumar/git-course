@@ -62,6 +62,38 @@ void searchStudent() {
 
     fclose(fp);
 }
+void updateStudent() {
+    FILE *fp = fopen("students.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    struct Student s;
+    int updateId, found = 0;
+
+    printf("Enter ID to update: ");
+    scanf("%d", &updateId);
+
+    while (fscanf(fp, "%d %s %f", &s.id, s.name, &s.marks) != EOF) {
+        if (s.id == updateId) {
+            printf("Enter new name: ");
+            scanf(" %[^\n]", s.name);
+            printf("Enter new marks: ");
+            scanf("%f", &s.marks);
+            found = 1;
+        }
+        fprintf(temp, "%d %s %.2f\n", s.id, s.name, s.marks);
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    remove("students.txt");
+    rename("temp.txt", "students.txt");
+
+    if (found)
+        printf("Record updated successfully.\n");
+    else
+        printf("Student not found.\n");
+}
 int main() {
     int choice;
 
