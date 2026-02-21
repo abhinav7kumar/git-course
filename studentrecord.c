@@ -42,6 +42,26 @@ void viewStudents() {
 
     fclose(fp);
 }
+void searchStudent() {
+    FILE *fp = fopen("students.txt", "r");
+    struct Student s;
+    int searchId, found = 0;
+
+    printf("Enter ID to search: ");
+    scanf("%d", &searchId);
+
+    while (fscanf(fp, "%d %s %f", &s.id, s.name, &s.marks) != EOF) {
+        if (s.id == searchId) {
+            printf("Found: %s | Marks: %.2f\n", s.name, s.marks);
+            found = 1;
+        }
+    }
+
+    if (!found)
+        printf("Student not found.\n");
+
+    fclose(fp);
+}
 int main() {
     int choice;
 
