@@ -30,6 +30,18 @@ void addStudent() {
 
     printf("Student Added Successfully!\n");
 }
+void viewStudents() {
+    FILE *fp = fopen("students.txt", "r");
+    struct Student s;
+
+    printf("\n--- Student List ---\n");
+
+    while (fscanf(fp, "%d %s %f", &s.id, s.name, &s.marks) != EOF) {
+        printf("ID: %d | Name: %s | Marks: %.2f\n", s.id, s.name, s.marks);
+    }
+
+    fclose(fp);
+}
 int main() {
     int choice;
 
