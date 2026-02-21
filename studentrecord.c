@@ -94,6 +94,35 @@ void updateStudent() {
     else
         printf("Student not found.\n");
 }
+void deleteStudent() {
+    FILE *fp = fopen("students.txt", "r");
+    FILE *temp = fopen("temp.txt", "w");
+
+    struct Student s;
+    int deleteId, found = 0;
+
+    printf("Enter ID to delete: ");
+    scanf("%d", &deleteId);
+
+    while (fscanf(fp, "%d %s %f", &s.id, s.name, &s.marks) != EOF) {
+        if (s.id != deleteId) {
+            fprintf(temp, "%d %s %.2f\n", s.id, s.name, s.marks);
+        } else {
+            found = 1;
+        }
+    }
+
+    fclose(fp);
+    fclose(temp);
+
+    remove("students.txt");
+    rename("temp.txt", "students.txt");
+
+    if (found)
+        printf("Record deleted successfully.\n");
+    else
+        printf("Student not found.\n");
+}
 int main() {
     int choice;
 
