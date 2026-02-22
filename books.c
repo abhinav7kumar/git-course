@@ -48,6 +48,28 @@ void viewBooks() {
 
     fclose(fp);
 }
+void searchBook() {
+    FILE *fp = fopen("books.txt", "r");
+    struct Book b;
+    int searchId, found = 0;
+
+    printf("Enter Book ID to search: ");
+    scanf("%d", &searchId);
+
+    while (fscanf(fp, "%d|%[^|]|%[^|]|%d\n",
+        &b.id, b.title, b.author, &b.quantity) != EOF) {
+
+        if (b.id == searchId) {
+            printf("Found: %s by %s | Qty: %d\n",
+                   b.title, b.author, b.quantity);
+            found = 1;
+        }
+    }
+
+    if (!found) printf("Book not found.\n");
+
+    fclose(fp);
+}
 int main() {
     int choice;
     while (1) {
