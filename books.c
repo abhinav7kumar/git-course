@@ -7,6 +7,10 @@ struct Book {
     char author[100];
     int quantity;
 };
+struct Member {
+    int id;
+    char name[100];
+};
 
 void menu() {
     printf("\n===== LIBRARY SYSTEM =====\n");
