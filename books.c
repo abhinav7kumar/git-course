@@ -33,6 +33,21 @@ void addBook() {
 
     printf("Book added successfully!\n");
 }
+void viewBooks() {
+    FILE *fp = fopen("books.txt", "r");
+    struct Book b;
+
+    printf("\n--- Book List ---\n");
+
+    while (fscanf(fp, "%d|%[^|]|%[^|]|%d\n",
+        &b.id, b.title, b.author, &b.quantity) != EOF) {
+
+        printf("ID: %d | %s | %s | Qty: %d\n",
+               b.id, b.title, b.author, b.quantity);
+    }
+
+    fclose(fp);
+}
 int main() {
     int choice;
     while (1) {
