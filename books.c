@@ -15,7 +15,24 @@ void menu() {
     printf("3. Exit\n");
     printf("Enter choice: ");
 }
+void addBook() {
+    FILE *fp = fopen("books.txt", "a");
+    struct Book b;
 
+    printf("Enter Book ID: ");
+    scanf("%d", &b.id);
+    printf("Enter Title: ");
+    scanf(" %[^\n]", b.title);
+    printf("Enter Author: ");
+    scanf(" %[^\n]", b.author);
+    printf("Enter Quantity: ");
+    scanf("%d", &b.quantity);
+
+    fprintf(fp, "%d|%s|%s|%d\n", b.id, b.title, b.author, b.quantity);
+    fclose(fp);
+
+    printf("Book added successfully!\n");
+}
 int main() {
     int choice;
     while (1) {
