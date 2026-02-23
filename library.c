@@ -38,6 +38,20 @@ void displayBooks() {
         printf("\nStatus: %s\n", books[i].issued ? "Issued" : "Available");
     }
 }
+void searchBook() {
+    int id;
+    printf("Enter Book ID to search: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < bookCount; i++) {
+        if (books[i].id == id) {
+            printf("Book Found: %s by %s\n", books[i].title, books[i].author);
+            return;
+        }
+    }
+
+    printf("Book not found.\n");
+}
 void showMenu() {
     printf("\n===== Library Management System =====\n");
     printf("1. Add Book\n");
