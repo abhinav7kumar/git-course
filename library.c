@@ -25,6 +25,19 @@ void addBook() {
 
     printf("Book added successfully!\n");
 }
+void displayBooks() {
+    if (bookCount == 0) {
+        printf("No books available.\n");
+        return;
+    }
+
+    for (int i = 0; i < bookCount; i++) {
+        printf("\nID: %d", books[i].id);
+        printf("\nTitle: %s", books[i].title);
+        printf("\nAuthor: %s", books[i].author);
+        printf("\nStatus: %s\n", books[i].issued ? "Issued" : "Available");
+    }
+}
 void showMenu() {
     printf("\n===== Library Management System =====\n");
     printf("1. Add Book\n");
