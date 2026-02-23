@@ -1,6 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct Book {
+    int id;
+    char title[50];
+    char author[50];
+    int issued;
+};
+void addBook() {
+    struct Book b;
+
+    printf("Enter Book ID: ");
+    scanf("%d", &b.id);
+
+    printf("Enter Title: ");
+    scanf(" %[^\n]", b.title);
+
+    printf("Enter Author: ");
+    scanf(" %[^\n]", b.author);
+
+    b.issued = 0;
+
+    books[bookCount++] = b;
+
+    printf("Book added successfully!\n");
+}
 void showMenu() {
     printf("\n===== Library Management System =====\n");
     printf("1. Add Book\n");
@@ -8,6 +32,10 @@ void showMenu() {
     printf("3. Exit\n");
     printf("Enter your choice: ");
 }
+
+
+struct Book books[MAX];
+int bookCount = 0;
 
 int main() {
     int choice;
