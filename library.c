@@ -52,6 +52,21 @@ void searchBook() {
 
     printf("Book not found.\n");
 }
+void issueBook() {
+    int id;
+    printf("Enter Book ID to issue: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < bookCount; i++) {
+        if (books[i].id == id && books[i].issued == 0) {
+            books[i].issued = 1;
+            printf("Book issued successfully.\n");
+            return;
+        }
+    }
+
+    printf("Book not available.\n");
+}
 void showMenu() {
     printf("\n===== Library Management System =====\n");
     printf("1. Add Book\n");
