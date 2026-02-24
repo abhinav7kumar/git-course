@@ -19,6 +19,22 @@ while (player1 < 100 && player2 < 100) {
 }
 if (player1 + dice <= 100)
     player1 += dice;
+
+int checkSnakesAndLadders(int position) {
+    // Ladders
+    if (position == 4) return 14;
+    if (position == 9) return 31;
+    if (position == 20) return 38;
+    if (position == 28) return 84;
+
+    // Snakes
+    if (position == 17) return 7;
+    if (position == 54) return 34;
+    if (position == 62) return 19;
+    if (position == 87) return 24;
+
+    return position;
+}
 int rollDice() {
     return (rand() % 6) + 1;
 }
