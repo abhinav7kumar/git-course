@@ -35,6 +35,9 @@ int checkSnakesAndLadders(int position) {
 
     return position;
 }
+player1 = checkSnakesAndLadders(player1);
+player2 = checkSnakesAndLadders(player2);
+
 int rollDice() {
     return (rand() % 6) + 1;
 }
