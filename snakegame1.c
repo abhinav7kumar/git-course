@@ -17,6 +17,8 @@ while (player1 < 100 && player2 < 100) {
     player2 += dice;
     printf("Player 2 position: %d\n", player2);
 }
+if (player1 + dice <= 100)
+    player1 += dice;
 int rollDice() {
     return (rand() % 6) + 1;
 }
