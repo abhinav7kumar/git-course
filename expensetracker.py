@@ -37,3 +37,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+print("1. Add Expense")
+print("2. View Expenses")
+print("3. Delete Expense")
+print("4. Update Expense")
+print("5. Total Expense")
+print("6. Category Summary")
+print("7. Filter by Category")
+print("8. Budget Check")
+print("9. Export CSV")
+print("10. Exit")
