@@ -1,3 +1,9 @@
+import json
+
+def save_to_file():
+    data = [e.__dict__ for e in expenses]
+    with open("expenses.json", "w") as f:
+        json.dump(data, f)
 def menu():
     print("\n==== Expense Tracker ====")
     print("1. Add Expense")
