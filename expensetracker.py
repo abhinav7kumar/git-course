@@ -8,6 +8,16 @@ class Expense:
         self.amount = amount
         self.category = category
         self.description = description
+expenses = []
+
+def add_expense():
+    amount = float(input("Amount: "))
+    category = input("Category: ")
+    description = input("Description: ")
+
+    expense = Expense(amount, category, description)
+    expenses.append(expense)
+    print("Expense added successfully.")
 def main():
     while True:
         menu()
