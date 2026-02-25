@@ -18,6 +18,9 @@ def add_expense():
     expense = Expense(amount, category, description)
     expenses.append(expense)
     print("Expense added successfully.")
+def view_expenses():
+    for i, e in enumerate(expenses):
+        print(f"{i+1}. {e.amount} | {e.category} | {e.description}")
 def main():
     while True:
         menu()
