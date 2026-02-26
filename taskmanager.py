@@ -1,3 +1,14 @@
+tasks = []
+
+def add_task():
+    title = input("Enter task title: ")
+    tasks.append({"title": title})
+    print("Task added.")
+
+def view_tasks():
+    for i, task in enumerate(tasks):
+        print(f"{i+1}. {task['title']}")
+
 def menu():
     print("\n==== TASK MANAGER ====")
     print("1. Add Task")
@@ -9,7 +20,11 @@ def main():
         menu()
         choice = input("Enter choice: ")
 
-        if choice == "3":
+        if choice == "1":
+            add_task()
+        elif choice == "2":
+            view_tasks()
+        elif choice == "3":
             print("Goodbye!")
             break
 
