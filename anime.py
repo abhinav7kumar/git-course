@@ -18,16 +18,35 @@ class Scene:
         self.description = text
 
     def info(self):
-        return f"Scene: {self.title} ({self.duration_seconds} sec)"
+        return f"{self.title} ({self.duration_seconds} sec)"
+
+
+class Episode:
+    def __init__(self, title):
+        self.title = title
+        self.scenes = []
+
+    def add_scene(self, scene):
+        self.scenes.append(scene)
+
+    def total_duration(self):
+        return sum(scene.duration_seconds for scene in self.scenes)
+
+    def summary(self):
+        print(f"\nEpisode: {self.title}")
+        for scene in self.scenes:
+            print("-", scene.info())
+        print("Total Duration:", self.total_duration(), "seconds")
 
 
 def main():
-    print("Whispers of Summer - Production Manager")
+    episode1 = Episode("The Quiet Summer")
 
     scene1 = Scene("Morning Field", 40)
-    scene1.set_description("Haruto watering rice fields while Sachiko watches.")
+    scene1.set_description("Haruto watering crops.")
 
-    print(scene1.info())
+    episode1.add_scene(scene1)
+    episode1.summary()
 
 
 if __name__ == "__main__":
