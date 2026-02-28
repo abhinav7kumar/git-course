@@ -1,13 +1,8 @@
-# anime_project.py
-
 class Character:
     def __init__(self, name, age, role):
         self.name = name
         self.age = age
         self.role = role
-
-    def describe(self):
-        return f"{self.name} ({self.role}), Age: {self.age}"
 
 
 class Scene:
@@ -23,14 +18,12 @@ class Scene:
     def add_dialogue(self, character, line):
         self.dialogues.append((character.name, line))
 
-    def info(self):
-        return f"{self.title} ({self.duration_seconds} sec)"
-
-    def print_scene(self):
-        print(f"\nScene: {self.title}")
-        print(self.description)
+    def format_scene(self):
+        output = f"\nScene: {self.title}\n"
+        output += self.description + "\n"
         for speaker, line in self.dialogues:
-            print(f"{speaker}: {line}")
+            output += f"{speaker}: {line}\n"
+        return output
 
 
 class Episode:
@@ -41,18 +34,11 @@ class Episode:
     def add_scene(self, scene):
         self.scenes.append(scene)
 
-    def total_duration(self):
-        return sum(scene.duration_seconds for scene in self.scenes)
-
-    def summary(self):
-        print(f"\nEpisode: {self.title}")
-        for scene in self.scenes:
-            print("-", scene.info())
-        print("Total Duration:", self.total_duration(), "seconds")
-
-    def play(self):
-        for scene in self.scenes:
-            scene.print_scene()
+    def export_to_file(self, filename):
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(f"Episode: {self.title}\n")
+            for scene in self.scenes:
+                f.write(scene.format_scene())
 
 
 def main():
@@ -67,7 +53,7 @@ def main():
     scene1.add_dialogue(haruto, "They look thirsty.")
 
     episode1.add_scene(scene1)
-    episode1.play()
+    episode1.export_to_file("episode1.txt")
 
 
 if __name__ == "__main__":
