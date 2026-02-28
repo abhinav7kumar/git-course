@@ -19,7 +19,7 @@ class Scene:
         self.dialogues.append((character.name, line))
 
     def format_scene(self):
-        output = f"\nScene: {self.title}\n"
+        output = f"\nScene: {self.title} ({self.duration_seconds} sec)\n"
         output += self.description + "\n"
         for speaker, line in self.dialogues:
             output += f"{speaker}: {line}\n"
@@ -34,9 +34,13 @@ class Episode:
     def add_scene(self, scene):
         self.scenes.append(scene)
 
+    def total_duration(self):
+        return sum(scene.duration_seconds for scene in self.scenes)
+
     def export_to_file(self, filename):
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"Episode: {self.title}\n")
+            f.write(f"Total Duration: {self.total_duration()} sec\n")
             for scene in self.scenes:
                 f.write(scene.format_scene())
 
