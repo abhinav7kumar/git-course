@@ -1,3 +1,6 @@
+import json
+
+
 class Character:
     def __init__(self, name, age, role):
         self.name = name
@@ -17,6 +20,21 @@ class Scene:
 
     def add_dialogue(self, character, line):
         self.dialogues.append((character.name, line))
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "duration_seconds": self.duration_seconds,
+            "description": self.description,
+            "dialogues": self.dialogues,
+        }
+
+    @staticmethod
+    def from_dict(data):
+        scene = Scene(data["title"], data["duration_seconds"])
+        scene.description = data["description"]
+        scene.dialogues = data["dialogues"]
+        return scene
 
     def format_scene(self):
         output = f"\nScene: {self.title} ({self.duration_seconds} sec)\n"
@@ -44,6 +62,24 @@ class Episode:
             for scene in self.scenes:
                 f.write(scene.format_scene())
 
+    def save_to_json(self, filename):
+        data = {
+            "title": self.title,
+            "scenes": [scene.to_dict() for scene in self.scenes],
+        }
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
+    @staticmethod
+    def load_from_json(filename):
+        with open(filename, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        episode = Episode(data["title"])
+        for scene_data in data["scenes"]:
+            episode.add_scene(Scene.from_dict(scene_data))
+        return episode
+
 
 def main():
     haruto = Character("Haruto", 16, "Protagonist")
@@ -57,6 +93,8 @@ def main():
     scene1.add_dialogue(haruto, "They look thirsty.")
 
     episode1.add_scene(scene1)
+
+    episode1.save_to_json("episode1.json")
     episode1.export_to_file("episode1.txt")
 
 
