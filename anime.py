@@ -18,8 +18,8 @@ class Scene:
     def set_description(self, text):
         self.description = text
 
-    def add_dialogue(self, character, line):
-        self.dialogues.append((character.name, line))
+    def add_dialogue(self, character_name, line):
+        self.dialogues.append((character_name, line))
 
     def to_dict(self):
         return {
@@ -81,21 +81,54 @@ class Episode:
         return episode
 
 
+def create_scene_interactively():
+    title = input("Scene title: ")
+    duration = int(input("Duration (seconds): "))
+    scene = Scene(title, duration)
+
+    description = input("Scene description: ")
+    scene.set_description(description)
+
+    while True:
+        add = input("Add dialogue? (y/n): ").lower()
+        if add != "y":
+            break
+        character = input("Character name: ")
+        line = input("Dialogue line: ")
+        scene.add_dialogue(character, line)
+
+    return scene
+
+
 def main():
-    haruto = Character("Haruto", 16, "Protagonist")
-    sachiko = Character("Sachiko", 70, "Grandmother")
+    episode_title = input("Enter episode title: ")
+    episode = Episode(episode_title)
 
-    episode1 = Episode("The Quiet Summer")
+    while True:
+        print("\n1. Add Scene")
+        print("2. Save Episode")
+        print("3. Export Script")
+        print("4. Exit")
 
-    scene1 = Scene("Morning Field", 40)
-    scene1.set_description("Haruto watering crops while Sachiko watches.")
-    scene1.add_dialogue(sachiko, "You're giving them too much water.")
-    scene1.add_dialogue(haruto, "They look thirsty.")
+        choice = input("Choose option: ")
 
-    episode1.add_scene(scene1)
+        if choice == "1":
+            scene = create_scene_interactively()
+            episode.add_scene(scene)
 
-    episode1.save_to_json("episode1.json")
-    episode1.export_to_file("episode1.txt")
+        elif choice == "2":
+            filename = input("Enter JSON filename: ")
+            episode.save_to_json(filename)
+
+        elif choice == "3":
+            filename = input("Enter TXT filename: ")
+            episode.export_to_file(filename)
+
+        elif choice == "4":
+            break
+
+        else:
+            print("Invalid choice.")
 
 
 if __name__ == "__main__":
