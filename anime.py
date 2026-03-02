@@ -81,6 +81,15 @@ def main():
 
             scene = Scene(title, duration)
             scene.set_description(description)
+
+            while True:
+                add = input("Add dialogue? (y/n): ").lower()
+                if add != "y":
+                    break
+                speaker = input("Character name: ")
+                line = input("Dialogue: ")
+                scene.add_dialogue(speaker, line)
+
             episode.add_scene(scene)
 
         elif choice == "3":
