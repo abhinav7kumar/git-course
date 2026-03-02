@@ -8,15 +8,7 @@ class Character:
         self.role = role
 
     def to_dict(self):
-        return {
-            "name": self.name,
-            "age": self.age,
-            "role": self.role
-        }
-
-    @staticmethod
-    def from_dict(data):
-        return Character(data["name"], data.get("age"), data.get("role"))
+        return {"name": self.name, "age": self.age, "role": self.role}
 
 
 class Scene:
@@ -40,13 +32,6 @@ class Scene:
             "dialogues": self.dialogues,
         }
 
-    @staticmethod
-    def from_dict(data):
-        scene = Scene(data["title"], data["duration_seconds"])
-        scene.description = data["description"]
-        scene.dialogues = data["dialogues"]
-        return scene
-
 
 class Episode:
     def __init__(self, title):
@@ -57,16 +42,12 @@ class Episode:
     def add_character(self, character):
         self.characters[character.name] = character
 
-    def list_characters(self):
-        for name, char in self.characters.items():
-            print(f"- {name} ({char.role})")
-
     def add_scene(self, scene):
         self.scenes.append(scene)
 
-    def save_to_json(self, filename):
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(self.to_dict(), f, indent=4)
+    def list_scenes(self):
+        for i, scene in enumerate(self.scenes):
+            print(f"{i + 1}. {scene.title} ({scene.duration_seconds} sec)")
 
     def to_dict(self):
         return {
@@ -81,8 +62,9 @@ def main():
 
     while True:
         print("\n1. Add Character")
-        print("2. List Characters")
-        print("3. Exit")
+        print("2. Add Scene")
+        print("3. List Scenes")
+        print("4. Exit")
 
         choice = input("Choose: ")
 
@@ -93,9 +75,18 @@ def main():
             episode.add_character(Character(name, age, role))
 
         elif choice == "2":
-            episode.list_characters()
+            title = input("Scene title: ")
+            duration = int(input("Duration (seconds): "))
+            description = input("Description: ")
+
+            scene = Scene(title, duration)
+            scene.set_description(description)
+            episode.add_scene(scene)
 
         elif choice == "3":
+            episode.list_scenes()
+
+        elif choice == "4":
             break
 
 
