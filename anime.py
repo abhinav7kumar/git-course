@@ -47,13 +47,6 @@ class Scene:
         scene.dialogues = data["dialogues"]
         return scene
 
-    def format_scene(self):
-        output = f"\nScene: {self.title} ({self.duration_seconds} sec)\n"
-        output += self.description + "\n"
-        for speaker, line in self.dialogues:
-            output += f"{speaker}: {line}\n"
-        return output
-
 
 class Episode:
     def __init__(self, title):
@@ -64,11 +57,16 @@ class Episode:
     def add_character(self, character):
         self.characters[character.name] = character
 
+    def list_characters(self):
+        for name, char in self.characters.items():
+            print(f"- {name} ({char.role})")
+
     def add_scene(self, scene):
         self.scenes.append(scene)
 
-    def total_duration(self):
-        return sum(scene.duration_seconds for scene in self.scenes)
+    def save_to_json(self, filename):
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f, indent=4)
 
     def to_dict(self):
         return {
@@ -77,39 +75,28 @@ class Episode:
             "scenes": [scene.to_dict() for scene in self.scenes],
         }
 
-    def save_to_json(self, filename):
-        with open(filename, "w", encoding="utf-8") as f:
-            json.dump(self.to_dict(), f, indent=4)
-
-    @staticmethod
-    def load_from_json(filename):
-        with open(filename, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        episode = Episode(data["title"])
-
-        for name, char_data in data.get("characters", {}).items():
-            episode.add_character(Character.from_dict(char_data))
-
-        for scene_data in data["scenes"]:
-            episode.add_scene(Scene.from_dict(scene_data))
-
-        return episode
-
 
 def main():
-    episode = Episode("The Quiet Summer")
+    episode = Episode(input("Episode title: "))
 
-    haruto = Character("Haruto", 16, "Protagonist")
-    episode.add_character(haruto)
+    while True:
+        print("\n1. Add Character")
+        print("2. List Characters")
+        print("3. Exit")
 
-    scene = Scene("Morning Field", 40)
-    scene.set_description("Haruto watering crops.")
-    scene.add_dialogue("Haruto", "They look thirsty.")
+        choice = input("Choose: ")
 
-    episode.add_scene(scene)
+        if choice == "1":
+            name = input("Name: ")
+            age = input("Age: ")
+            role = input("Role: ")
+            episode.add_character(Character(name, age, role))
 
-    episode.save_to_json("episode.json")
+        elif choice == "2":
+            episode.list_characters()
+
+        elif choice == "3":
+            break
 
 
 if __name__ == "__main__":
