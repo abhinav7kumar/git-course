@@ -12,6 +12,16 @@ def add_student():
     }
     print("Student added successfully!")
 
+def pay_fees():
+    student_id = input("Enter Student ID: ")
+
+    if student_id in students:
+        amount = float(input("Enter Amount to Pay: "))
+        students[student_id]["fees_paid"] += amount
+        print("Payment successful!")
+    else:
+        print("Student not found!")
+
 def view_students():
     if not students:
         print("No students found.")
@@ -25,16 +35,19 @@ def main():
     while True:
         print("\n===== FEES MANAGEMENT SYSTEM =====")
         print("1. Add Student")
-        print("2. View Students")
-        print("3. Exit")
+        print("2. Pay Fees")
+        print("3. View Students")
+        print("4. Exit")
 
         choice = input("Enter choice: ")
 
         if choice == "1":
             add_student()
         elif choice == "2":
-            view_students()
+            pay_fees()
         elif choice == "3":
+            view_students()
+        elif choice == "4":
             break
         else:
             print("Invalid choice!")
