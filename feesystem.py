@@ -17,8 +17,14 @@ def pay_fees():
 
     if student_id in students:
         amount = float(input("Enter Amount to Pay: "))
-        students[student_id]["fees_paid"] += amount
-        print("Payment successful!")
+        total = students[student_id]["total_fees"]
+        paid = students[student_id]["fees_paid"]
+
+        if paid + amount > total:
+            print("Payment exceeds total fees!")
+        else:
+            students[student_id]["fees_paid"] += amount
+            print("Payment successful!")
     else:
         print("Student not found!")
 
