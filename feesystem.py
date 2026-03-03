@@ -1,10 +1,13 @@
-tudents = {}
+students = {}
 
 def add_student():
     student_id = input("Enter Student ID: ")
     name = input("Enter Student Name: ")
+    total_fees = float(input("Enter Total Fees: "))
+
     students[student_id] = {
         "name": name,
+        "total_fees": total_fees,
         "fees_paid": 0
     }
     print("Student added successfully!")
@@ -15,7 +18,8 @@ def view_students():
         return
 
     for sid, data in students.items():
-        print(f"ID: {sid}, Name: {data['name']}, Fees Paid: {data['fees_paid']}")
+        pending = data["total_fees"] - data["fees_paid"]
+        print(f"ID: {sid}, Name: {data['name']}, Paid: {data['fees_paid']}, Pending: {pending}")
 
 def main():
     while True:
@@ -31,7 +35,6 @@ def main():
         elif choice == "2":
             view_students()
         elif choice == "3":
-            print("Exiting...")
             break
         else:
             print("Invalid choice!")
