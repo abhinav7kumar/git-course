@@ -1,15 +1,27 @@
+class Student:
+    def __init__(self, student_id, name, total_fees):
+        self.student_id = student_id
+        self.name = name
+        self.total_fees = total_fees
+        self.fees_paid = 0
+
+    def pay(self, amount):
+        if self.fees_paid + amount > self.total_fees:
+            return False
+        self.fees_paid += amount
+        return True
+
+    def pending(self):
+        return self.total_fees - self.fees_paid
+
+
 students = {}
 
 def add_student():
     student_id = input("Enter Student ID: ")
     name = input("Enter Student Name: ")
     total_fees = float(input("Enter Total Fees: "))
-
-    students[student_id] = {
-        "name": name,
-        "total_fees": total_fees,
-        "fees_paid": 0
-    }
+    students[student_id] = Student(student_id, name, total_fees)
     print("Student added successfully!")
 
 def pay_fees():
@@ -17,25 +29,16 @@ def pay_fees():
 
     if student_id in students:
         amount = float(input("Enter Amount to Pay: "))
-        total = students[student_id]["total_fees"]
-        paid = students[student_id]["fees_paid"]
-
-        if paid + amount > total:
-            print("Payment exceeds total fees!")
-        else:
-            students[student_id]["fees_paid"] += amount
+        if students[student_id].pay(amount):
             print("Payment successful!")
+        else:
+            print("Payment exceeds total fees!")
     else:
         print("Student not found!")
 
 def view_students():
-    if not students:
-        print("No students found.")
-        return
-
-    for sid, data in students.items():
-        pending = data["total_fees"] - data["fees_paid"]
-        print(f"ID: {sid}, Name: {data['name']}, Paid: {data['fees_paid']}, Pending: {pending}")
+    for student in students.values():
+        print(f"ID: {student.student_id}, Name: {student.name}, Paid: {student.fees_paid}, Pending: {student.pending()}")
 
 def main():
     while True:
