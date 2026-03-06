@@ -30,6 +30,10 @@ def view_expenses():
     for i, expense in enumerate(expenses, start=1):
         print(f"{i}. {expense['name']} - ₹{expense['amount']}")
 
+def show_summary():
+    total = sum(expense["amount"] for expense in expenses)
+    print(f"\nTotal Expenses: ₹{total}")
+
 def save_expenses():
     with open("expenses.json", "w") as file:
         json.dump(expenses, file)
@@ -44,7 +48,8 @@ def main():
         print("\nOptions:")
         print("1. Add Expense")
         print("2. View Expenses")
-        print("3. Exit")
+        print("3. Expense Summary")
+        print("4. Exit")
 
         choice = input("Choose an option: ")
 
@@ -54,6 +59,8 @@ def main():
         elif choice == "2":
             view_expenses()
         elif choice == "3":
+            show_summary()
+        elif choice == "4":
             save_expenses()
             print("Goodbye!")
             break
