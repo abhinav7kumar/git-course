@@ -12,6 +12,15 @@ def add_expense():
     expenses.append(expense)
     print("Expense added successfully!")
 
+def view_expenses():
+    if not expenses:
+        print("No expenses recorded.")
+        return
+
+    print("\nYour Expenses:")
+    for i, expense in enumerate(expenses, start=1):
+        print(f"{i}. {expense['name']} - ₹{expense['amount']}")
+
 def main():
     print("Simple Expense Manager")
     print("----------------------")
@@ -27,7 +36,7 @@ def main():
         if choice == "1":
             add_expense()
         elif choice == "2":
-            print("View expenses feature coming soon.")
+            view_expenses()
         elif choice == "3":
             print("Goodbye!")
             break
