@@ -1,3 +1,5 @@
+import json
+
 expenses = []
 
 def add_expense():
@@ -21,6 +23,10 @@ def view_expenses():
     for i, expense in enumerate(expenses, start=1):
         print(f"{i}. {expense['name']} - ₹{expense['amount']}")
 
+def save_expenses():
+    with open("expenses.json", "w") as file:
+        json.dump(expenses, file)
+
 def main():
     print("Simple Expense Manager")
     print("----------------------")
@@ -35,9 +41,11 @@ def main():
 
         if choice == "1":
             add_expense()
+            save_expenses()
         elif choice == "2":
             view_expenses()
         elif choice == "3":
+            save_expenses()
             print("Goodbye!")
             break
         else:
