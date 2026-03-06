@@ -1,6 +1,13 @@
 import json
+import os
 
 expenses = []
+
+def load_expenses():
+    global expenses
+    if os.path.exists("expenses.json"):
+        with open("expenses.json", "r") as file:
+            expenses = json.load(file)
 
 def add_expense():
     name = input("Enter expense name: ")
@@ -28,6 +35,8 @@ def save_expenses():
         json.dump(expenses, file)
 
 def main():
+    load_expenses()
+
     print("Simple Expense Manager")
     print("----------------------")
 
