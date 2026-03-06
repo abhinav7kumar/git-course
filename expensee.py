@@ -1,5 +1,17 @@
 expenses = []
 
+def add_expense():
+    name = input("Enter expense name: ")
+    amount = float(input("Enter amount: "))
+
+    expense = {
+        "name": name,
+        "amount": amount
+    }
+
+    expenses.append(expense)
+    print("Expense added successfully!")
+
 def main():
     print("Simple Expense Manager")
     print("----------------------")
@@ -13,7 +25,7 @@ def main():
         choice = input("Choose an option: ")
 
         if choice == "1":
-            print("Add expense feature coming soon.")
+            add_expense()
         elif choice == "2":
             print("View expenses feature coming soon.")
         elif choice == "3":
