@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 
 expenses = []
 
@@ -14,21 +15,22 @@ def save_expenses():
         json.dump(expenses, file)
 
 def add_expense():
-    name = input("Enter expense name: ")
-    amount = float(input("Enter amount: "))
-    category = input("Enter category: ")
+    name = input("Expense name: ")
+    amount = float(input("Amount: "))
+    category = input("Category: ")
 
     expense = {
         "name": name,
         "amount": amount,
-        "category": category
+        "category": category,
+        "date": datetime.now().strftime("%Y-%m-%d")
     }
 
     expenses.append(expense)
 
 def view_expenses():
     for i, e in enumerate(expenses, start=1):
-        print(f"{i}. {e['name']} | ₹{e['amount']} | {e['category']}")
+        print(f"{i}. {e['name']} | ₹{e['amount']} | {e['category']} | {e['date']}")
 
 def delete_expense():
     view_expenses()
@@ -41,12 +43,9 @@ def show_summary():
 
 def category_summary():
     summary = {}
-
     for e in expenses:
-        cat = e["category"]
-        summary[cat] = summary.get(cat, 0) + e["amount"]
+        summary[e["category"]] = summary.get(e["category"], 0) + e["amount"]
 
-    print("\nCategory Summary:")
     for k, v in summary.items():
         print(k, ":", v)
 
@@ -57,7 +56,7 @@ def main():
         print("\n1 Add")
         print("2 View")
         print("3 Delete")
-        print("4 Total Summary")
+        print("4 Total")
         print("5 Category Summary")
         print("6 Exit")
 
