@@ -16,7 +16,7 @@ def save_expenses():
 def add_expense():
     name = input("Enter expense name: ")
     amount = float(input("Enter amount: "))
-    category = input("Enter category (food/travel/etc): ")
+    category = input("Enter category: ")
 
     expense = {
         "name": name,
@@ -25,54 +25,55 @@ def add_expense():
     }
 
     expenses.append(expense)
-    print("Expense added successfully!")
 
 def view_expenses():
-    if not expenses:
-        print("No expenses recorded.")
-        return
-
-    print("\nYour Expenses:")
-    for i, expense in enumerate(expenses, start=1):
-        print(f"{i}. {expense['name']} | ₹{expense['amount']} | {expense['category']}")
+    for i, e in enumerate(expenses, start=1):
+        print(f"{i}. {e['name']} | ₹{e['amount']} | {e['category']}")
 
 def delete_expense():
     view_expenses()
-    index = int(input("Enter expense number to delete: ")) - 1
-
-    if 0 <= index < len(expenses):
-        removed = expenses.pop(index)
-        print(f"Deleted: {removed['name']}")
-    else:
-        print("Invalid expense number.")
+    index = int(input("Delete number: ")) - 1
+    expenses.pop(index)
 
 def show_summary():
-    total = sum(expense["amount"] for expense in expenses)
-    print(f"\nTotal Expenses: ₹{total}")
+    total = sum(e["amount"] for e in expenses)
+    print("Total:", total)
+
+def category_summary():
+    summary = {}
+
+    for e in expenses:
+        cat = e["category"]
+        summary[cat] = summary.get(cat, 0) + e["amount"]
+
+    print("\nCategory Summary:")
+    for k, v in summary.items():
+        print(k, ":", v)
 
 def main():
     load_expenses()
 
     while True:
-        print("\n1 Add Expense")
-        print("2 View Expenses")
-        print("3 Delete Expense")
-        print("4 Summary")
-        print("5 Exit")
+        print("\n1 Add")
+        print("2 View")
+        print("3 Delete")
+        print("4 Total Summary")
+        print("5 Category Summary")
+        print("6 Exit")
 
-        choice = input("Choose: ")
+        choice = input("Choice: ")
 
         if choice == "1":
             add_expense()
-            save_expenses()
         elif choice == "2":
             view_expenses()
         elif choice == "3":
             delete_expense()
-            save_expenses()
         elif choice == "4":
             show_summary()
         elif choice == "5":
+            category_summary()
+        elif choice == "6":
             save_expenses()
             break
 
