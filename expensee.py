@@ -16,10 +16,12 @@ def save_expenses():
 def add_expense():
     name = input("Enter expense name: ")
     amount = float(input("Enter amount: "))
+    category = input("Enter category (food/travel/etc): ")
 
     expense = {
         "name": name,
-        "amount": amount
+        "amount": amount,
+        "category": category
     }
 
     expenses.append(expense)
@@ -32,7 +34,7 @@ def view_expenses():
 
     print("\nYour Expenses:")
     for i, expense in enumerate(expenses, start=1):
-        print(f"{i}. {expense['name']} - ₹{expense['amount']}")
+        print(f"{i}. {expense['name']} | ₹{expense['amount']} | {expense['category']}")
 
 def delete_expense():
     view_expenses()
@@ -52,8 +54,7 @@ def main():
     load_expenses()
 
     while True:
-        print("\nOptions:")
-        print("1 Add Expense")
+        print("\n1 Add Expense")
         print("2 View Expenses")
         print("3 Delete Expense")
         print("4 Summary")
