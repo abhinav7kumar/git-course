@@ -14,6 +14,15 @@ def add_password():
     passwords.append(entry)
     print("Password saved.")
 
+def view_passwords():
+    if not passwords:
+        print("No passwords stored.")
+        return
+
+    print("\nSaved Passwords:")
+    for i, entry in enumerate(passwords, start=1):
+        print(f"{i}. {entry['site']} | {entry['username']} | {entry['password']}")
+
 def main():
     print("Simple Password Manager")
 
@@ -28,7 +37,7 @@ def main():
         if choice == "1":
             add_password()
         elif choice == "2":
-            print("View password feature coming soon.")
+            view_passwords()
         elif choice == "3":
             print("Exiting...")
             break
