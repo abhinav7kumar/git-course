@@ -1,5 +1,19 @@
 passwords = []
 
+def add_password():
+    site = input("Enter website/app name: ")
+    username = input("Enter username: ")
+    password = input("Enter password: ")
+
+    entry = {
+        "site": site,
+        "username": username,
+        "password": password
+    }
+
+    passwords.append(entry)
+    print("Password saved.")
+
 def main():
     print("Simple Password Manager")
 
@@ -12,7 +26,7 @@ def main():
         choice = input("Select option: ")
 
         if choice == "1":
-            print("Add password feature coming soon.")
+            add_password()
         elif choice == "2":
             print("View password feature coming soon.")
         elif choice == "3":
