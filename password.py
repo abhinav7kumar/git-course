@@ -20,53 +20,54 @@ def add_password():
     username = input("Enter username: ")
     password = input("Enter password: ")
 
-    entry = {
+    passwords.append({
         "site": site,
         "username": username,
         "password": password
-    }
+    })
 
-    passwords.append(entry)
     save_passwords()
-    print("Password saved.")
 
 def view_passwords():
-    if not passwords:
-        print("No passwords stored.")
-        return
-
     for i, entry in enumerate(passwords, start=1):
         print(f"{i}. {entry['site']} | {entry['username']} | {entry['password']}")
 
 def delete_password():
     view_passwords()
-    index = int(input("Enter number to delete: ")) - 1
+    index = int(input("Delete number: ")) - 1
 
     if 0 <= index < len(passwords):
-        removed = passwords.pop(index)
+        passwords.pop(index)
         save_passwords()
-        print(f"Deleted entry for {removed['site']}")
-    else:
-        print("Invalid number.")
+
+def search_password():
+    site = input("Enter website to search: ")
+
+    for entry in passwords:
+        if entry["site"].lower() == site.lower():
+            print(entry)
 
 def main():
     load_passwords()
 
     while True:
-        print("\n1 Add Password")
-        print("2 View Passwords")
-        print("3 Delete Password")
-        print("4 Exit")
+        print("\n1 Add")
+        print("2 View")
+        print("3 Delete")
+        print("4 Search")
+        print("5 Exit")
 
-        choice = input("Select option: ")
+        c = input("Choice: ")
 
-        if choice == "1":
+        if c == "1":
             add_password()
-        elif choice == "2":
+        elif c == "2":
             view_passwords()
-        elif choice == "3":
+        elif c == "3":
             delete_password()
-        elif choice == "4":
+        elif c == "4":
+            search_password()
+        elif c == "5":
             break
 
 if __name__ == "__main__":
