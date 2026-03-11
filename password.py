@@ -1,4 +1,14 @@
+import json
+import os
+
 passwords = []
+
+def load_passwords():
+    global passwords
+
+    if os.path.exists("vault.json"):
+        with open("vault.json", "r") as f:
+            passwords = json.load(f)
 
 def add_password():
     site = input("Enter website/app name: ")
@@ -12,7 +22,7 @@ def add_password():
     }
 
     passwords.append(entry)
-    print("Password saved.")
+    save_passwords()
 
 def view_passwords():
     if not passwords:
@@ -23,7 +33,13 @@ def view_passwords():
     for i, entry in enumerate(passwords, start=1):
         print(f"{i}. {entry['site']} | {entry['username']} | {entry['password']}")
 
+def save_passwords():
+    with open("vault.json", "w") as f:
+        json.dump(passwords, f)
+
 def main():
+    load_passwords()
+
     print("Simple Password Manager")
 
     while True:
@@ -39,7 +55,7 @@ def main():
         elif choice == "2":
             view_passwords()
         elif choice == "3":
-            print("Exiting...")
+            save_passwords()
             break
         else:
             print("Invalid option.")
