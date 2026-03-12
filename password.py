@@ -78,6 +78,51 @@ def search_passwords():
         print(entry)
 
 
+def update_password():
+    if not passwords:
+        print("No passwords stored.")
+        return
+
+    for idx, entry in enumerate(passwords, start=1):
+        print(f"{idx}. {entry['site']} ({entry['username']})")
+
+    try:
+        choice = int(input("Enter number to update (0 to cancel): "))
+    except ValueError:
+        print("Invalid input.")
+        return
+
+    if choice == 0:
+        return
+    if not (1 <= choice <= len(passwords)):
+        print("Choice out of range.")
+        return
+
+    entry = passwords[choice - 1]
+    print(f"Selected {entry['site']} ({entry['username']})")
+    new_site = input(f"New site (leave blank to keep '{entry['site']}'): ")
+    new_user = input(f"New username (leave blank to keep '{entry['username']}'): ")
+    ch = input("Change password? (y/n): ")
+    if ch.lower() == 'y':
+        gen = input("Generate new password? (y/n): ")
+        if gen.lower() == 'y':
+            new_pass = generate_password()
+            print("Generated password:", new_pass)
+        else:
+            new_pass = input("Enter new password: ")
+    else:
+        new_pass = entry['password']
+
+    if new_site:
+        entry['site'] = new_site
+    if new_user:
+        entry['username'] = new_user
+    entry['password'] = new_pass
+
+    save_passwords()
+    print("Entry updated.")
+
+
 def main():
     load_passwords()
 
@@ -85,8 +130,9 @@ def main():
         print("\n1 Add Password")
         print("2 View Passwords")
         print("3 Search Passwords")
-        print("4 Delete Password")
-        print("5 Exit")
+        print("4 Update Password")
+        print("5 Delete Password")
+        print("6 Exit")
 
         c = input("Choice: ")
 
@@ -97,8 +143,10 @@ def main():
         elif c == "3":
             search_passwords()
         elif c == "4":
-            delete_password()
+            update_password()
         elif c == "5":
+            delete_password()
+        elif c == "6":
             break
 
 if __name__ == "__main__":
