@@ -91,6 +91,19 @@ def import_passwords(filename="vault.csv"):
         save_passwords()
     print(f"Imported {count} entries from {filename}")
 
+def list_weak_passwords():
+    """Display entries that have weak or very weak passwords."""
+    weak = []
+    for entry in passwords:
+        strength = check_password_strength(entry['password'])
+        if strength in ("Very Weak", "Weak"):
+            weak.append((entry, strength))
+    if not weak:
+        print("No weak passwords found.")
+        return
+    for entry, strength in weak:
+        print(f"{entry} => {strength}")
+
 
 def delete_password():
     if not passwords:
@@ -186,7 +199,8 @@ def main():
         print("5 Delete Password")
         print("6 Export to CSV")
         print("7 Import from CSV")
-        print("8 Exit")
+        print("8 List Weak Passwords")
+        print("9 Exit")
 
         c = input("Choice: ")
 
@@ -205,6 +219,8 @@ def main():
         elif c == "7":
             import_passwords()
         elif c == "8":
+            list_weak_passwords()
+        elif c == "9":
             break
 
 if __name__ == "__main__":
