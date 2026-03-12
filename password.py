@@ -2,6 +2,7 @@ import json
 import os
 import random
 import string
+import csv
 
 passwords = []
 
@@ -42,6 +43,17 @@ def add_password():
 def view_passwords():
     for entry in passwords:
         print(entry)
+
+def export_passwords(filename="vault.csv"):
+    if not passwords:
+        print("No passwords to export.")
+        return
+    with open(filename, "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["site", "username", "password"])
+        for e in passwords:
+            writer.writerow([e["site"], e["username"], e["password"]])
+    print(f"Exported {len(passwords)} entries to {filename}")
 
 
 def delete_password():
@@ -132,7 +144,8 @@ def main():
         print("3 Search Passwords")
         print("4 Update Password")
         print("5 Delete Password")
-        print("6 Exit")
+        print("6 Export to CSV")
+        print("7 Exit")
 
         c = input("Choice: ")
 
@@ -147,6 +160,8 @@ def main():
         elif c == "5":
             delete_password()
         elif c == "6":
+            export_passwords()
+        elif c == "7":
             break
 
 if __name__ == "__main__":
