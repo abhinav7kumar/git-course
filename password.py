@@ -68,14 +68,25 @@ def delete_password():
         print("Choice out of range.")
 
 
+def search_passwords():
+    term = input("Search term (site or username): ")
+    matches = [e for e in passwords if term.lower() in e['site'].lower() or term.lower() in e['username'].lower()]
+    if not matches:
+        print("No matching entries.")
+        return
+    for entry in matches:
+        print(entry)
+
+
 def main():
     load_passwords()
 
     while True:
         print("\n1 Add Password")
         print("2 View Passwords")
-        print("3 Delete Password")
-        print("4 Exit")
+        print("3 Search Passwords")
+        print("4 Delete Password")
+        print("5 Exit")
 
         c = input("Choice: ")
 
@@ -84,8 +95,10 @@ def main():
         elif c == "2":
             view_passwords()
         elif c == "3":
-            delete_password()
+            search_passwords()
         elif c == "4":
+            delete_password()
+        elif c == "5":
             break
 
 if __name__ == "__main__":
