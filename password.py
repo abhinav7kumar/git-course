@@ -20,6 +20,20 @@ def generate_password(length=12):
     characters = string.ascii_letters + string.digits + string.punctuation
     return "".join(random.choice(characters) for _ in range(length))
 
+def check_password_strength(pw):
+    # simple heuristic: length plus variety of character types
+    score = 0
+    if len(pw) >= 8:
+        score += 1
+    if any(c.islower() for c in pw) and any(c.isupper() for c in pw):
+        score += 1
+    if any(c.isdigit() for c in pw):
+        score += 1
+    if any(c in string.punctuation for c in pw):
+        score += 1
+    strengths = {0: "Very Weak", 1: "Weak", 2: "Moderate", 3: "Strong", 4: "Very Strong"}
+    return strengths.get(score, "Unknown")
+
 def add_password():
     site = input("Website: ")
     username = input("Username: ")
@@ -31,6 +45,9 @@ def add_password():
         print("Generated password:", password)
     else:
         password = input("Enter password: ")
+    # show strength
+    strength = check_password_strength(password)
+    print(f"Password strength: {strength}")
 
     passwords.append({
         "site": site,
@@ -143,6 +160,10 @@ def update_password():
             new_pass = input("Enter new password: ")
     else:
         new_pass = entry['password']
+    # check strength if changed
+    if new_pass != entry['password']:
+        strength = check_password_strength(new_pass)
+        print(f"New password strength: {strength}")
 
     if new_site:
         entry['site'] = new_site
