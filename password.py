@@ -3,14 +3,45 @@ import os
 import random
 import string
 import csv
+import hashlib
 
 passwords = []
+MASTER_FILE = "master.hash"
 
 def load_passwords():
     global passwords
     if os.path.exists("vault.json"):
         with open("vault.json", "r") as f:
             passwords = json.load(f)
+
+def set_master_password():
+    pwd = input("Set master password: ")
+    confirm = input("Confirm master password: ")
+    if pwd != confirm:
+        print("Passwords do not match. Master password not set.")
+        return False
+    h = hashlib.sha256(pwd.encode()).hexdigest()
+    with open(MASTER_FILE, "w") as f:
+        f.write(h)
+    print("Master password set.")
+    return True
+
+def verify_master_password():
+    if not os.path.exists(MASTER_FILE):
+        print("No master password set. Please create one.")
+        return set_master_password()
+    stored = open(MASTER_FILE).read().strip()
+    attempt = input("Enter master password: ")
+    if hashlib.sha256(attempt.encode()).hexdigest() == stored:
+        return True
+    print("Incorrect master password.")
+    return False
+
+def change_master_password():
+    if not verify_master_password():
+        return
+    print("Enter new master password.")
+    set_master_password()
 
 def save_passwords():
     with open("vault.json", "w") as f:
@@ -189,6 +220,9 @@ def update_password():
 
 
 def main():
+    # require master password check first
+    if not verify_master_password():
+        return
     load_passwords()
 
     while True:
@@ -200,7 +234,8 @@ def main():
         print("6 Export to CSV")
         print("7 Import from CSV")
         print("8 List Weak Passwords")
-        print("9 Exit")
+        print("9 Change Master Password")
+        print("10 Exit")
 
         c = input("Choice: ")
 
@@ -221,6 +256,8 @@ def main():
         elif c == "8":
             list_weak_passwords()
         elif c == "9":
+            change_master_password()
+        elif c == "10":
             break
 
 if __name__ == "__main__":
