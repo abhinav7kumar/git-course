@@ -55,6 +55,25 @@ def export_passwords(filename="vault.csv"):
             writer.writerow([e["site"], e["username"], e["password"]])
     print(f"Exported {len(passwords)} entries to {filename}")
 
+def import_passwords(filename="vault.csv"):
+    if not os.path.exists(filename):
+        print(f"File {filename} not found.")
+        return
+    count = 0
+    with open(filename, newline="") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if "site" in row and "username" in row and "password" in row:
+                passwords.append({
+                    "site": row["site"],
+                    "username": row["username"],
+                    "password": row["password"]
+                })
+                count += 1
+    if count > 0:
+        save_passwords()
+    print(f"Imported {count} entries from {filename}")
+
 
 def delete_password():
     if not passwords:
@@ -145,7 +164,8 @@ def main():
         print("4 Update Password")
         print("5 Delete Password")
         print("6 Export to CSV")
-        print("7 Exit")
+        print("7 Import from CSV")
+        print("8 Exit")
 
         c = input("Choice: ")
 
@@ -162,6 +182,8 @@ def main():
         elif c == "6":
             export_passwords()
         elif c == "7":
+            import_passwords()
+        elif c == "8":
             break
 
 if __name__ == "__main__":
