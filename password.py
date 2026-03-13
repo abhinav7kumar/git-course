@@ -196,6 +196,30 @@ def regenerate_weak_passwords():
     print("Weak passwords regenerated and saved.")
 
 
+def check_duplicate_passwords():
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    from collections import defaultdict
+    pass_to_sites = defaultdict(list)
+    for entry in passwords:
+        pass_to_sites[entry['password']].append((entry['site'], entry['username']))
+    
+    duplicates = {pwd: sites for pwd, sites in pass_to_sites.items() if len(sites) > 1}
+    
+    if not duplicates:
+        print("No duplicate passwords found. All passwords are unique.")
+        return
+    
+    print("Duplicate passwords found:")
+    for pwd, sites in duplicates.items():
+        print(f"Password '{pwd}' is used for:")
+        for site, user in sites:
+            print(f"  - {site} ({user})")
+        print()
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -298,7 +322,8 @@ def main():
         print("10 Backup Vault")
         print("11 Show Statistics")
         print("12 Regenerate Weak Passwords")
-        print("13 Exit")
+        print("13 Check Duplicate Passwords")
+        print("14 Exit")
 
         c = input("Choice: ")
 
@@ -327,6 +352,8 @@ def main():
         elif c == "12":
             regenerate_weak_passwords()
         elif c == "13":
+            check_duplicate_passwords()
+        elif c == "14":
             break
 
 if __name__ == "__main__":
