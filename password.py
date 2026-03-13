@@ -136,6 +136,16 @@ def list_weak_passwords():
         print(f"{entry} => {strength}")
 
 
+def backup_vault():
+    if not os.path.exists("vault.json"):
+        print("No vault to backup.")
+        return
+    import shutil
+    backup_file = "vault_backup.json"
+    shutil.copy("vault.json", backup_file)
+    print(f"Vault backed up to {backup_file}")
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -235,7 +245,8 @@ def main():
         print("7 Import from CSV")
         print("8 List Weak Passwords")
         print("9 Change Master Password")
-        print("10 Exit")
+        print("10 Backup Vault")
+        print("11 Exit")
 
         c = input("Choice: ")
 
@@ -258,7 +269,10 @@ def main():
         elif c == "9":
             change_master_password()
         elif c == "10":
+            backup_vault()
+        elif c == "11":
             break
 
 if __name__ == "__main__":
     main()
+    
