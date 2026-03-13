@@ -146,6 +146,28 @@ def backup_vault():
     print(f"Vault backed up to {backup_file}")
 
 
+def show_statistics():
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    total = len(passwords)
+    lengths = [len(entry['password']) for entry in passwords]
+    avg_length = sum(lengths) / total if total > 0 else 0
+    
+    strengths = [check_password_strength(entry['password']) for entry in passwords]
+    weak_count = sum(1 for s in strengths if s in ("Very Weak", "Weak"))
+    strong_count = sum(1 for s in strengths if s == "Very Strong")
+    
+    unique_sites = len(set(entry['site'] for entry in passwords))
+    
+    print(f"Total passwords: {total}")
+    print(f"Average password length: {avg_length:.1f}")
+    print(f"Weak passwords: {weak_count}")
+    print(f"Very strong passwords: {strong_count}")
+    print(f"Unique sites: {unique_sites}")
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -246,7 +268,8 @@ def main():
         print("8 List Weak Passwords")
         print("9 Change Master Password")
         print("10 Backup Vault")
-        print("11 Exit")
+        print("11 Show Statistics")
+        print("12 Exit")
 
         c = input("Choice: ")
 
@@ -271,6 +294,8 @@ def main():
         elif c == "10":
             backup_vault()
         elif c == "11":
+            show_statistics()
+        elif c == "12":
             break
 
 if __name__ == "__main__":
