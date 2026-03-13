@@ -168,6 +168,34 @@ def show_statistics():
     print(f"Unique sites: {unique_sites}")
 
 
+def regenerate_weak_passwords():
+    weak_entries = []
+    for i, entry in enumerate(passwords):
+        strength = check_password_strength(entry['password'])
+        if strength in ("Very Weak", "Weak"):
+            weak_entries.append((i, entry, strength))
+    
+    if not weak_entries:
+        print("No weak passwords to regenerate.")
+        return
+    
+    print(f"Found {len(weak_entries)} weak password(s):")
+    for idx, entry, strength in weak_entries:
+        print(f"{idx+1}. {entry['site']} ({entry['username']}) - {strength}")
+    
+    confirm = input("Regenerate all weak passwords? (y/n): ")
+    if confirm.lower() != 'y':
+        return
+    
+    for idx, entry, _ in weak_entries:
+        new_pass = generate_password()
+        passwords[idx]['password'] = new_pass
+        print(f"Regenerated password for {entry['site']}: {new_pass}")
+    
+    save_passwords()
+    print("Weak passwords regenerated and saved.")
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -269,7 +297,8 @@ def main():
         print("9 Change Master Password")
         print("10 Backup Vault")
         print("11 Show Statistics")
-        print("12 Exit")
+        print("12 Regenerate Weak Passwords")
+        print("13 Exit")
 
         c = input("Choice: ")
 
@@ -296,6 +325,8 @@ def main():
         elif c == "11":
             show_statistics()
         elif c == "12":
+            regenerate_weak_passwords()
+        elif c == "13":
             break
 
 if __name__ == "__main__":
