@@ -254,6 +254,49 @@ def search_passwords():
         print(entry)
 
 
+def get_password_by_site():
+    """Securely retrieve and display a single password by site name."""
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    site = input("Enter site name to retrieve password: ").strip().lower()
+    matching = [e for e in passwords if site in e['site'].lower()]
+    
+    if not matching:
+        print(f"No entries found for '{site}'.")
+        return
+    
+    if len(matching) > 1:
+        print("Multiple matches found:")
+        for idx, entry in enumerate(matching, start=1):
+            print(f"{idx}. {entry['site']} ({entry['username']})")
+        try:
+            choice = int(input("Select entry (0 to cancel): "))
+            if choice == 0:
+                return
+            if 1 <= choice <= len(matching):
+                entry = matching[choice - 1]
+            else:
+                print("Invalid choice.")
+                return
+        except ValueError:
+            print("Invalid input.")
+            return
+    else:
+        entry = matching[0]
+    
+    confirm = input(f"Show password for {entry['site']}? (y/n): ")
+    if confirm.lower() != 'y':
+        print("Cancelled.")
+        return
+    
+    print(f"\nSite: {entry['site']}")
+    print(f"Username: {entry['username']}")
+    print(f"Password: {entry['password']}")
+    print(f"Strength: {check_password_strength(entry['password'])}\n")
+
+
 def update_password():
     if not passwords:
         print("No passwords stored.")
@@ -313,17 +356,18 @@ def main():
         print("\n1 Add Password")
         print("2 View Passwords")
         print("3 Search Passwords")
-        print("4 Update Password")
-        print("5 Delete Password")
-        print("6 Export to CSV")
-        print("7 Import from CSV")
-        print("8 List Weak Passwords")
-        print("9 Change Master Password")
-        print("10 Backup Vault")
-        print("11 Show Statistics")
-        print("12 Regenerate Weak Passwords")
-        print("13 Check Duplicate Passwords")
-        print("14 Exit")
+        print("4 Get Password by Site")
+        print("5 Update Password")
+        print("6 Delete Password")
+        print("7 Export to CSV")
+        print("8 Import from CSV")
+        print("9 List Weak Passwords")
+        print("10 Change Master Password")
+        print("11 Backup Vault")
+        print("12 Show Statistics")
+        print("13 Regenerate Weak Passwords")
+        print("14 Check Duplicate Passwords")
+        print("15 Exit")
 
         c = input("Choice: ")
 
@@ -334,28 +378,41 @@ def main():
         elif c == "3":
             search_passwords()
         elif c == "4":
-            update_password()
+            get_password_by_site()
         elif c == "5":
-            delete_password()
+            update_password()
         elif c == "6":
-            export_passwords()
+            delete_password()
         elif c == "7":
-            import_passwords()
+            export_passwords()
         elif c == "8":
-            list_weak_passwords()
+            import_passwords()
         elif c == "9":
-            change_master_password()
+            list_weak_passwords()
         elif c == "10":
-            backup_vault()
+            change_master_password()
         elif c == "11":
-            show_statistics()
+            backup_vault()
         elif c == "12":
-            regenerate_weak_passwords()
+            show_statistics()
         elif c == "13":
-            check_duplicate_passwords()
+            regenerate_weak_passwords()
         elif c == "14":
+            check_duplicate_passwords()
+        elif c == "15":
             break
 
 if __name__ == "__main__":
     main()
     
+
+
+
+
+
+
+
+
+
+
+
