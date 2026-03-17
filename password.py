@@ -4,6 +4,11 @@ import random
 import string
 import csv
 import hashlib
+try:
+    import pyperclip
+    CLIPBOARD_AVAILABLE = True
+except ImportError:
+    CLIPBOARD_AVAILABLE = False
 
 passwords = []
 MASTER_FILE = "master.hash"
@@ -297,6 +302,55 @@ def get_password_by_site():
     print(f"Strength: {check_password_strength(entry['password'])}\n")
 
 
+def copy_password_to_clipboard():
+    """Copy a password to clipboard without displaying it on screen."""
+    if not CLIPBOARD_AVAILABLE:
+        print("Clipboard functionality not available. Install 'pyperclip': pip install pyperclip")
+        return
+    
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    site = input("Enter site name to copy password: ").strip().lower()
+    matching = [e for e in passwords if site in e['site'].lower()]
+    
+    if not matching:
+        print(f"No entries found for '{site}'.")
+        return
+    
+    if len(matching) > 1:
+        print("Multiple matches found:")
+        for idx, entry in enumerate(matching, start=1):
+            print(f"{idx}. {entry['site']} ({entry['username']})")
+        try:
+            choice = int(input("Select entry (0 to cancel): "))
+            if choice == 0:
+                return
+            if 1 <= choice <= len(matching):
+                entry = matching[choice - 1]
+            else:
+                print("Invalid choice.")
+                return
+        except ValueError:
+            print("Invalid input.")
+            return
+    else:
+        entry = matching[0]
+    
+    confirm = input(f"Copy password for {entry['site']} to clipboard? (y/n): ")
+    if confirm.lower() != 'y':
+        print("Cancelled.")
+        return
+    
+    try:
+        pyperclip.copy(entry['password'])
+        print(f"✓ Password for {entry['site']} copied to clipboard!")
+        print("  (Clipboard will be cleared for security after 30 seconds)")
+    except Exception as e:
+        print(f"Error copying to clipboard: {e}")
+
+
 def update_password():
     if not passwords:
         print("No passwords stored.")
@@ -357,17 +411,18 @@ def main():
         print("2 View Passwords")
         print("3 Search Passwords")
         print("4 Get Password by Site")
-        print("5 Update Password")
-        print("6 Delete Password")
-        print("7 Export to CSV")
-        print("8 Import from CSV")
-        print("9 List Weak Passwords")
-        print("10 Change Master Password")
-        print("11 Backup Vault")
-        print("12 Show Statistics")
-        print("13 Regenerate Weak Passwords")
-        print("14 Check Duplicate Passwords")
-        print("15 Exit")
+        print("5 Copy Password to Clipboard")
+        print("6 Update Password")
+        print("7 Delete Password")
+        print("8 Export to CSV")
+        print("9 Import from CSV")
+        print("10 List Weak Passwords")
+        print("11 Change Master Password")
+        print("12 Backup Vault")
+        print("13 Show Statistics")
+        print("14 Regenerate Weak Passwords")
+        print("15 Check Duplicate Passwords")
+        print("16 Exit")
 
         c = input("Choice: ")
 
@@ -380,26 +435,28 @@ def main():
         elif c == "4":
             get_password_by_site()
         elif c == "5":
-            update_password()
+            copy_password_to_clipboard()
         elif c == "6":
-            delete_password()
+            update_password()
         elif c == "7":
-            export_passwords()
+            delete_password()
         elif c == "8":
-            import_passwords()
+            export_passwords()
         elif c == "9":
-            list_weak_passwords()
+            import_passwords()
         elif c == "10":
-            change_master_password()
+            list_weak_passwords()
         elif c == "11":
-            backup_vault()
+            change_master_password()
         elif c == "12":
-            show_statistics()
+            backup_vault()
         elif c == "13":
-            regenerate_weak_passwords()
+            show_statistics()
         elif c == "14":
-            check_duplicate_passwords()
+            regenerate_weak_passwords()
         elif c == "15":
+            check_duplicate_passwords()
+        elif c == "16":
             break
 
 if __name__ == "__main__":
