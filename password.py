@@ -4,6 +4,7 @@ import random
 import string
 import csv
 import hashlib
+from datetime import datetime, timedelta
 try:
     import pyperclip
     CLIPBOARD_AVAILABLE = True
@@ -88,7 +89,9 @@ def add_password():
     passwords.append({
         "site": site,
         "username": username,
-        "password": password
+        "password": password,
+        "created_at": datetime.now().isoformat(),
+        "updated_at": datetime.now().isoformat()
     })
 
     save_passwords()
@@ -177,6 +180,57 @@ def view_passwords_by_strength():
             percentage = (count / len(passwords)) * 100
             print(f"  {strength}: {count} ({percentage:.1f}%)")
     print("="*70 + "\n")
+
+
+def check_password_age():
+    """Display password age and recommend changes for old passwords."""
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    now = datetime.now()
+    age_threshold = 90  # days - recommend changing after 90 days
+    
+    password_ages = []
+    for entry in passwords:
+        created_at_str = entry.get('created_at', None)
+        if created_at_str:
+            created_at = datetime.fromisoformat(created_at_str)
+            age = (now - created_at).days
+            password_ages.append((entry, age))
+        else:
+            password_ages.append((entry, None))
+    
+    # Sort by age (oldest first)
+    password_ages.sort(key=lambda x: x[1] if x[1] is not None else -1, reverse=True)
+    
+    print("\n" + "="*80)
+    print("PASSWORD AGE REPORT")
+    print("="*80)
+    
+    old_passwords = 0
+    for entry, age in password_ages:
+        if age is None:
+            age_str = "Unknown (no creation date)"
+            warning = ""
+        else:
+            age_str = f"{age} days"
+            if age > age_threshold:
+                warning = " ⚠️  CHANGE RECOMMENDED!"
+                old_passwords += 1
+            else:
+                warning = ""
+        
+        print(f"\n{entry['site']} ({entry['username']})")
+        print(f"  Age: {age_str}{warning}")
+    
+    print("\n" + "="*80)
+    print(f"SUMMARY:")
+    print(f"  Total passwords: {len(passwords)}")
+    print(f"  Passwords older than {age_threshold} days: {old_passwords}")
+    if old_passwords > 0:
+        print(f"  ⚠️  Recommend changing {old_passwords} password(s) for security!")
+    print("="*80 + "\n")
 
 
 def backup_vault():
@@ -433,6 +487,7 @@ def update_password():
     if new_user:
         entry['username'] = new_user
     entry['password'] = new_pass
+    entry['updated_at'] = datetime.now().isoformat()
 
     save_passwords()
     print("Entry updated.")
@@ -458,10 +513,11 @@ def main():
         print("11 List Weak Passwords")
         print("12 Change Master Password")
         print("13 Backup Vault")
-        print("14 Show Statistics")
-        print("15 Regenerate Weak Passwords")
-        print("16 Check Duplicate Passwords")
-        print("17 Exit")
+        print("14 Check Password Age")
+        print("15 Show Statistics")
+        print("16 Regenerate Weak Passwords")
+        print("17 Check Duplicate Passwords")
+        print("18 Exit")
 
         c = input("Choice: ")
 
@@ -492,12 +548,14 @@ def main():
         elif c == "13":
             backup_vault()
         elif c == "14":
-            show_statistics()
+            check_password_age()
         elif c == "15":
-            regenerate_weak_passwords()
+            show_statistics()
         elif c == "16":
-            check_duplicate_passwords()
+            regenerate_weak_passwords()
         elif c == "17":
+            check_duplicate_passwords()
+        elif c == "18":
             break
 
 if __name__ == "__main__":
