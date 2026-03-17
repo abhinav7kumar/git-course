@@ -141,6 +141,44 @@ def list_weak_passwords():
         print(f"{entry} => {strength}")
 
 
+def view_passwords_by_strength():
+    """Display all passwords organized and grouped by strength level."""
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    from collections import defaultdict
+    strength_groups = defaultdict(list)
+    
+    for entry in passwords:
+        strength = check_password_strength(entry['password'])
+        strength_groups[strength].append(entry)
+    
+    # Display in order from strongest to weakest
+    strength_order = ["Very Strong", "Strong", "Moderate", "Weak", "Very Weak"]
+    
+    print("\n" + "="*70)
+    print("PASSWORDS ORGANIZED BY STRENGTH")
+    print("="*70)
+    
+    for strength in strength_order:
+        if strength in strength_groups:
+            entries = strength_groups[strength]
+            print(f"\n[{strength}] - {len(entries)} password(s)")
+            print("-" * 70)
+            for i, entry in enumerate(entries, 1):
+                print(f"  {i}. {entry['site']} ({entry['username']})")
+    
+    print("\n" + "="*70)
+    print(f"SUMMARY: Total {len(passwords)} passwords")
+    for strength in strength_order:
+        if strength in strength_groups:
+            count = len(strength_groups[strength])
+            percentage = (count / len(passwords)) * 100
+            print(f"  {strength}: {count} ({percentage:.1f}%)")
+    print("="*70 + "\n")
+
+
 def backup_vault():
     if not os.path.exists("vault.json"):
         print("No vault to backup.")
@@ -416,13 +454,14 @@ def main():
         print("7 Delete Password")
         print("8 Export to CSV")
         print("9 Import from CSV")
-        print("10 List Weak Passwords")
-        print("11 Change Master Password")
-        print("12 Backup Vault")
-        print("13 Show Statistics")
-        print("14 Regenerate Weak Passwords")
-        print("15 Check Duplicate Passwords")
-        print("16 Exit")
+        print("10 View Passwords by Strength")
+        print("11 List Weak Passwords")
+        print("12 Change Master Password")
+        print("13 Backup Vault")
+        print("14 Show Statistics")
+        print("15 Regenerate Weak Passwords")
+        print("16 Check Duplicate Passwords")
+        print("17 Exit")
 
         c = input("Choice: ")
 
@@ -445,18 +484,20 @@ def main():
         elif c == "9":
             import_passwords()
         elif c == "10":
-            list_weak_passwords()
+            view_passwords_by_strength()
         elif c == "11":
-            change_master_password()
+            list_weak_passwords()
         elif c == "12":
-            backup_vault()
+            change_master_password()
         elif c == "13":
-            show_statistics()
+            backup_vault()
         elif c == "14":
-            regenerate_weak_passwords()
+            show_statistics()
         elif c == "15":
-            check_duplicate_passwords()
+            regenerate_weak_passwords()
         elif c == "16":
+            check_duplicate_passwords()
+        elif c == "17":
             break
 
 if __name__ == "__main__":
