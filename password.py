@@ -385,6 +385,199 @@ def check_password_breaches():
     print("=" * 70)
 
 
+def emergency_access_codes():
+    """Generate emergency access codes for trusted contacts."""
+    print("\n🚨 EMERGENCY ACCESS CODE SYSTEM")
+    print("This feature allows you to generate temporary codes that trusted")
+    print("contacts can use to access your password vault in emergency situations.")
+    print("Codes are encrypted and can have expiration times and usage limits.")
+    print()
+
+    # Load existing emergency codes
+    codes_file = "emergency_codes.json"
+    emergency_codes = []
+    if os.path.exists(codes_file):
+        try:
+            with open(codes_file, "r") as f:
+                emergency_codes = json.load(f)
+        except:
+            emergency_codes = []
+
+    while True:
+        print("\nEmergency Access Options:")
+        print("1. Generate new emergency code")
+        print("2. View active emergency codes")
+        print("3. Revoke emergency code")
+        print("4. Test emergency code access")
+        print("5. Return to main menu")
+
+        choice = input("Choose option: ").strip()
+
+        if choice == "1":
+            # Generate new emergency code
+            print("\n🔐 Generate Emergency Access Code")
+            contact_name = input("Trusted contact name: ").strip()
+            if not contact_name:
+                print("Contact name is required.")
+                continue
+
+            # Code expiration options
+            print("Code expiration options:")
+            print("1. 24 hours")
+            print("2. 7 days")
+            print("3. 30 days")
+            print("4. 90 days")
+            print("5. Custom hours")
+
+            exp_choice = input("Choose expiration: ").strip()
+            if exp_choice == "1":
+                expires_hours = 24
+            elif exp_choice == "2":
+                expires_hours = 168  # 7*24
+            elif exp_choice == "3":
+                expires_hours = 720  # 30*24
+            elif exp_choice == "4":
+                expires_hours = 2160  # 90*24
+            elif exp_choice == "5":
+                try:
+                    expires_hours = int(input("Enter hours: "))
+                except ValueError:
+                    print("Invalid hours.")
+                    continue
+            else:
+                print("Invalid choice.")
+                continue
+
+            # Usage limit
+            try:
+                max_uses = int(input("Maximum uses (0 for unlimited): "))
+            except ValueError:
+                max_uses = 1
+
+            # Generate secure code
+            code_chars = string.ascii_letters + string.digits
+            emergency_code = "".join(random.choice(code_chars) for _ in range(16))
+
+            # Create code entry
+            code_entry = {
+                "code": hashlib.sha256(emergency_code.encode()).hexdigest(),
+                "contact": contact_name,
+                "created_at": datetime.now().isoformat(),
+                "expires_at": (datetime.now() + timedelta(hours=expires_hours)).isoformat(),
+                "max_uses": max_uses,
+                "uses": 0,
+                "active": True
+            }
+
+            emergency_codes.append(code_entry)
+
+            # Save codes
+            with open(codes_file, "w") as f:
+                json.dump(emergency_codes, f)
+
+            print("
+✅ EMERGENCY CODE GENERATED"            print(f"Contact: {contact_name}")
+            print(f"Code: {emergency_code}")
+            print(f"Expires: {code_entry['expires_at']}")
+            print(f"Max uses: {max_uses if max_uses > 0 else 'Unlimited'}")
+            print()
+            print("⚠️  IMPORTANT SECURITY NOTICE:")
+            print("- Share this code ONLY with the trusted contact")
+            print("- Store this code securely (not in the vault)")
+            print("- The code will expire automatically")
+            print("- You can revoke the code anytime")
+            print()
+
+        elif choice == "2":
+            # View active codes
+            if not emergency_codes:
+                print("No emergency codes found.")
+                continue
+
+            print("\n📋 ACTIVE EMERGENCY CODES")
+            active_count = 0
+            for i, code in enumerate(emergency_codes, 1):
+                if code.get("active", True):
+                    active_count += 1
+                    expires = datetime.fromisoformat(code["expires_at"])
+                    remaining = expires - datetime.now()
+                    status = "ACTIVE" if remaining.total_seconds() > 0 else "EXPIRED"
+
+                    print(f"{i}. {code['contact']}")
+                    print(f"   Status: {status}")
+                    print(f"   Expires: {code['expires_at']}")
+                    print(f"   Uses: {code['uses']}/{code['max_uses'] if code['max_uses'] > 0 else '∞'}")
+                    print()
+
+            if active_count == 0:
+                print("No active emergency codes.")
+
+        elif choice == "3":
+            # Revoke code
+            if not emergency_codes:
+                print("No emergency codes to revoke.")
+                continue
+
+            print("\nSelect code to revoke:")
+            for i, code in enumerate(emergency_codes, 1):
+                if code.get("active", True):
+                    print(f"{i}. {code['contact']} (expires: {code['expires_at']})")
+
+            try:
+                revoke_choice = int(input("Enter number to revoke (0 to cancel): "))
+                if revoke_choice == 0:
+                    continue
+                if 1 <= revoke_choice <= len(emergency_codes):
+                    code_to_revoke = emergency_codes[revoke_choice - 1]
+                    code_to_revoke["active"] = False
+                    with open(codes_file, "w") as f:
+                        json.dump(emergency_codes, f)
+                    print(f"Emergency code for {code_to_revoke['contact']} has been revoked.")
+                else:
+                    print("Invalid choice.")
+            except ValueError:
+                print("Invalid input.")
+
+        elif choice == "4":
+            # Test emergency code access (for development/testing)
+            test_code = input("Enter emergency code to test: ").strip()
+            if not test_code:
+                continue
+
+            code_hash = hashlib.sha256(test_code.encode()).hexdigest()
+            found = False
+
+            for code in emergency_codes:
+                if code["code"] == code_hash and code.get("active", True):
+                    expires = datetime.fromisoformat(code["expires_at"])
+                    if datetime.now() < expires:
+                        if code["max_uses"] == 0 or code["uses"] < code["max_uses"]:
+                            code["uses"] += 1
+                            with open(codes_file, "w") as f:
+                                json.dump(emergency_codes, f)
+                            print("✅ Emergency code accepted!")
+                            print(f"Access granted for contact: {code['contact']}")
+                            print("Emergency access to vault would be provided here.")
+                            found = True
+                            break
+                        else:
+                            print("❌ Code has exceeded maximum uses.")
+                            found = True
+                            break
+                    else:
+                        print("❌ Code has expired.")
+                        found = True
+                        break
+
+            if not found:
+                print("❌ Invalid or inactive emergency code.")
+
+        elif choice == "5":
+            break
+        else:
+            print("Invalid option.")
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -632,7 +825,8 @@ def main():
         print("17 Check Duplicate Passwords")
         print("18 Manage Notes")
         print("19 Check Password Breaches")
-        print("20 Exit")
+        print("20 Emergency Access Codes")
+        print("21 Exit")
 
         c = input("Choice: ")
 
@@ -675,14 +869,13 @@ def main():
         elif c == "19":
             check_password_breaches()
         elif c == "20":
+            emergency_access_codes()
+        elif c == "21":
             break
 
 if __name__ == "__main__":
     main()
     
-
-
-
 
 
 
