@@ -86,10 +86,13 @@ def add_password():
     strength = check_password_strength(password)
     print(f"Password strength: {strength}")
 
+    notes = input("Notes (optional): ")
+
     passwords.append({
         "site": site,
         "username": username,
         "password": password,
+        "notes": notes,
         "created_at": datetime.now().isoformat(),
         "updated_at": datetime.now().isoformat()
     })
@@ -98,7 +101,12 @@ def add_password():
 
 def view_passwords():
     for entry in passwords:
-        print(entry)
+        print(f"Site: {entry['site']}")
+        print(f"Username: {entry['username']}")
+        print(f"Password: {entry['password']}")
+        if entry.get('notes'):
+            print(f"Notes: {entry['notes']}")
+        print("---")
 
 def export_passwords(filename="vault.csv"):
     if not passwords:
@@ -106,9 +114,9 @@ def export_passwords(filename="vault.csv"):
         return
     with open(filename, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["site", "username", "password"])
+        writer.writerow(["site", "username", "password", "notes"])
         for e in passwords:
-            writer.writerow([e["site"], e["username"], e["password"]])
+            writer.writerow([e["site"], e["username"], e["password"], e.get("notes", "")])
     print(f"Exported {len(passwords)} entries to {filename}")
 
 def import_passwords(filename="vault.csv"):
@@ -123,7 +131,8 @@ def import_passwords(filename="vault.csv"):
                 passwords.append({
                     "site": row["site"],
                     "username": row["username"],
-                    "password": row["password"]
+                    "password": row["password"],
+                    "notes": row.get("notes", "")
                 })
                 count += 1
     if count > 0:
@@ -348,7 +357,12 @@ def search_passwords():
         print("No matching entries.")
         return
     for entry in matches:
-        print(entry)
+        print(f"Site: {entry['site']}")
+        print(f"Username: {entry['username']}")
+        print(f"Password: {entry['password']}")
+        if entry.get('notes'):
+            print(f"Notes: {entry['notes']}")
+        print("---")
 
 
 def get_password_by_site():
@@ -391,7 +405,10 @@ def get_password_by_site():
     print(f"\nSite: {entry['site']}")
     print(f"Username: {entry['username']}")
     print(f"Password: {entry['password']}")
-    print(f"Strength: {check_password_strength(entry['password'])}\n")
+    print(f"Strength: {check_password_strength(entry['password'])}")
+    if entry.get('notes'):
+        print(f"Notes: {entry['notes']}")
+    print()
 
 
 def copy_password_to_clipboard():
@@ -443,16 +460,17 @@ def copy_password_to_clipboard():
         print(f"Error copying to clipboard: {e}")
 
 
-def update_password():
+def manage_notes():
     if not passwords:
         print("No passwords stored.")
         return
 
     for idx, entry in enumerate(passwords, start=1):
-        print(f"{idx}. {entry['site']} ({entry['username']})")
+        notes_indicator = " (has notes)" if entry.get('notes') else ""
+        print(f"{idx}. {entry['site']} ({entry['username']}){notes_indicator}")
 
     try:
-        choice = int(input("Enter number to update (0 to cancel): "))
+        choice = int(input("Enter number to manage notes (0 to cancel): "))
     except ValueError:
         print("Invalid input.")
         return
@@ -464,33 +482,12 @@ def update_password():
         return
 
     entry = passwords[choice - 1]
-    print(f"Selected {entry['site']} ({entry['username']})")
-    new_site = input(f"New site (leave blank to keep '{entry['site']}'): ")
-    new_user = input(f"New username (leave blank to keep '{entry['username']}'): ")
-    ch = input("Change password? (y/n): ")
-    if ch.lower() == 'y':
-        gen = input("Generate new password? (y/n): ")
-        if gen.lower() == 'y':
-            new_pass = generate_password()
-            print("Generated password:", new_pass)
-        else:
-            new_pass = input("Enter new password: ")
-    else:
-        new_pass = entry['password']
-    # check strength if changed
-    if new_pass != entry['password']:
-        strength = check_password_strength(new_pass)
-        print(f"New password strength: {strength}")
-
-    if new_site:
-        entry['site'] = new_site
-    if new_user:
-        entry['username'] = new_user
-    entry['password'] = new_pass
+    print(f"Current notes for {entry['site']}: {entry.get('notes', 'None')}")
+    new_notes = input("Enter new notes (leave blank to clear): ")
+    entry['notes'] = new_notes
     entry['updated_at'] = datetime.now().isoformat()
-
     save_passwords()
-    print("Entry updated.")
+    print("Notes updated.")
 
 
 def main():
@@ -517,7 +514,8 @@ def main():
         print("15 Show Statistics")
         print("16 Regenerate Weak Passwords")
         print("17 Check Duplicate Passwords")
-        print("18 Exit")
+        print("18 Manage Notes")
+        print("19 Exit")
 
         c = input("Choice: ")
 
@@ -556,6 +554,8 @@ def main():
         elif c == "17":
             check_duplicate_passwords()
         elif c == "18":
+            manage_notes()
+        elif c == "19":
             break
 
 if __name__ == "__main__":
