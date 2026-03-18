@@ -490,6 +490,63 @@ def manage_notes():
     print("Notes updated.")
 
 
+def update_password():
+    if not passwords:
+        print("No passwords stored.")
+        return
+
+    for idx, entry in enumerate(passwords, start=1):
+        print(f"{idx}. {entry['site']} ({entry['username']})")
+
+    try:
+        choice = int(input("Enter number to update (0 to cancel): "))
+    except ValueError:
+        print("Invalid input.")
+        return
+
+    if choice == 0:
+        return
+    if not (1 <= choice <= len(passwords)):
+        print("Choice out of range.")
+        return
+
+    entry = passwords[choice - 1]
+    print(f"Current entry: {entry['site']} ({entry['username']})")
+    
+    # Update site
+    new_site = input(f"New site (current: {entry['site']}, press Enter to keep): ").strip()
+    if new_site:
+        entry['site'] = new_site
+    
+    # Update username
+    new_username = input(f"New username (current: {entry['username']}, press Enter to keep): ").strip()
+    if new_username:
+        entry['username'] = new_username
+    
+    # Update password
+    update_pw = input("Update password? (y/n): ").lower()
+    if update_pw == 'y':
+        choice = input("Generate new password? (y/n): ")
+        if choice.lower() == "y":
+            new_password = generate_password()
+            print("Generated password:", new_password)
+        else:
+            new_password = input("Enter new password: ")
+        entry['password'] = new_password
+        strength = check_password_strength(new_password)
+        print(f"New password strength: {strength}")
+    
+    # Update notes
+    current_notes = entry.get('notes', '')
+    new_notes = input(f"New notes (current: {current_notes}, press Enter to keep): ").strip()
+    if new_notes or new_notes == '':
+        entry['notes'] = new_notes
+    
+    entry['updated_at'] = datetime.now().isoformat()
+    save_passwords()
+    print("Password entry updated.")
+
+
 def main():
     # require master password check first
     if not verify_master_password():
