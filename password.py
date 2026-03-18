@@ -326,6 +326,65 @@ def check_duplicate_passwords():
         print()
 
 
+def check_password_breaches():
+    """Check passwords against a database of commonly breached passwords."""
+    if not passwords:
+        print("No passwords stored.")
+        return
+    
+    # Common breached passwords (in a real implementation, this would be a much larger database)
+    # These are some of the most commonly used and breached passwords
+    breached_passwords = {
+        "password", "123456", "123456789", "qwerty", "abc123", "password123",
+        "admin", "letmein", "welcome", "monkey", "1234567890", "password1",
+        "qwerty123", "welcome123", "admin123", "root", "user", "guest",
+        "12345678", "12345", "qwertyuiop", "superman", "iloveyou", "princess",
+        "rockyou", "1234567", "123456789", "password123", "qwerty1", "1q2w3e4r",
+        "baseball", "dragon", "football", "master", "jordan", "harley", "ranger",
+        "iowa", "pepper", "jennifer", "jordan23", "michelle", "superman1",
+        "batman", "trustno1", "ninja", "hunter2", "shadow", "summer", "michael",
+        "buster", "jennifer1", "1qaz2wsx", "killer", "zaq1zaq1", "jordan1",
+        "pepper1", "matthew", "patrick", "newyork", "canada", "zxcvbnm",
+        "joshua", "daniel", "buster1", "pepperoni", "jennifer2", "summer1",
+        "1q2w3e4r5t", "qwertyui", "asdfghjkl", "zxcvbn", "qazwsx", "123qwe",
+        "qwe123", "1q2w3e", "2wsx3edc", "qweasd", "asdf123", "1qazxsw2",
+        "zaq12wsx", "123456a", "a123456", "654321", "123456789a", "1qaz2wsx3edc"
+    }
+    
+    breached_entries = []
+    total_checked = len(passwords)
+    
+    print("🔍 Checking passwords against known breach databases...")
+    print("(This is a simulation - in production, this would check against real breach data)")
+    print()
+    
+    for entry in passwords:
+        password = entry['password'].lower()  # Case-insensitive check
+        if password in breached_passwords:
+            breached_entries.append(entry)
+    
+    if not breached_entries:
+        print("✅ Good news! None of your passwords appear in known breach databases.")
+        print(f"   Checked {total_checked} password(s)")
+        return
+    
+    print("⚠️  WARNING: The following passwords have been found in known data breaches!")
+    print("   These should be changed immediately for security.")
+    print()
+    
+    for entry in breached_entries:
+        print(f"🚨 BREACHED: {entry['site']} ({entry['username']})")
+        print(f"   Password: {entry['password']}")
+        print(f"   Risk Level: HIGH - This password is commonly used and has been exposed")
+        print()
+    
+    print("=" * 70)
+    print(f"SUMMARY: {len(breached_entries)} out of {total_checked} passwords are compromised")
+    print("RECOMMENDATION: Change these passwords immediately!")
+    print("Use the 'Regenerate Weak Passwords' option or update them manually.")
+    print("=" * 70)
+
+
 def delete_password():
     if not passwords:
         print("No passwords stored.")
@@ -572,7 +631,8 @@ def main():
         print("16 Regenerate Weak Passwords")
         print("17 Check Duplicate Passwords")
         print("18 Manage Notes")
-        print("19 Exit")
+        print("19 Check Password Breaches")
+        print("20 Exit")
 
         c = input("Choice: ")
 
@@ -613,6 +673,8 @@ def main():
         elif c == "18":
             manage_notes()
         elif c == "19":
+            check_password_breaches()
+        elif c == "20":
             break
 
 if __name__ == "__main__":
