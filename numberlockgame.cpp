@@ -13,6 +13,8 @@ int main() {
 
     int highScore = 0;
     int bestStreak = 0;
+    int gamesPlayed = 0;
+    int wins = 0;
 
     {
         ifstream inFile("highscore.txt");
@@ -31,6 +33,17 @@ int main() {
         } else {
             cout << "No streak recorded yet. Start one now!\n";
             bestStreak = 0;
+        }
+    }
+
+    {
+        ifstream inFile("stats.txt");
+        if (inFile >> gamesPlayed >> wins) {
+            cout << "Total games: " << gamesPlayed << ", total wins: " << wins << " (" << (gamesPlayed > 0 ? (wins * 100 / gamesPlayed) : 0) << "% win rate)\n";
+        } else {
+            cout << "No stats yet. Play to build your record!\n";
+            gamesPlayed = 0;
+            wins = 0;
         }
     }
 
@@ -93,6 +106,8 @@ int main() {
                 }
 
                 currentStreak++;
+                wins++;
+                gamesPlayed++;
                 cout << "Current win streak: " << currentStreak << "\n";
                 if (currentStreak > bestStreak) {
                     bestStreak = currentStreak;
@@ -101,6 +116,11 @@ int main() {
                     cout << "New best streak! " << bestStreak << " saved." << endl;
                 } else {
                     cout << "Best streak remains: " << bestStreak << "." << endl;
+                }
+
+                {
+                    ofstream statsOut("stats.txt");
+                    if (statsOut) statsOut << gamesPlayed << " " << wins;
                 }
                 break;
             }
@@ -118,6 +138,7 @@ int main() {
         }
 
         if (!solved) {
+            gamesPlayed++;
             cout << "Game over. You failed to unlock the puzzle." << endl;
             cout << "Secret number was " << secret << "." << endl;
             cout << "Your score: 0" << endl;
