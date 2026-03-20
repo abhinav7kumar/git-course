@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
 #include <thread>
@@ -9,6 +10,17 @@ int main() {
     srand((unsigned int) time(nullptr));
     cout << "Welcome to the Number Lock Puzzle!" << endl;
     cout << "You can choose difficulty and use one hint during the game." << endl;
+
+    int highScore = 0;
+    {
+        ifstream inFile("highscore.txt");
+        if (inFile >> highScore) {
+            cout << "Current high score: " << highScore << "\n";
+        } else {
+            cout << "No high score yet. Be the first!\n";
+            highScore = 0;
+        }
+    }
 
     int choice;
     int maxAttempts;
@@ -29,6 +41,9 @@ int main() {
     cout << "Guess the secret number in range 1 to " << maxNumber << ".\n";
     cout << "Tip: enter 0 to unlock one bonus hint (odd/even)." << endl;
 
+    bool solved = false;
+    int finalScore = 0;
+
     while (attemptsLeft > 0) {
         int guess;
         cout << "Attempts left: " << attemptsLeft << ". Enter your guess: ";
@@ -46,8 +61,22 @@ int main() {
         }
 
         if (guess == secret) {
+            solved = true;
+            finalScore = attemptsLeft * 10;
+            if (usedHint) finalScore = max(0, finalScore - 15);
+
             cout << "Correct! Puzzle unlocked." << endl;
-            return 0;
+            cout << "Your score: " << finalScore << " (" << (usedHint ? "hint used" : "no hint") << ")" << endl;
+
+            if (finalScore > highScore) {
+                highScore = finalScore;
+                ofstream outFile("highscore.txt");
+                if (outFile) outFile << highScore;
+                cout << "New high score! " << highScore << " saved." << endl;
+            } else {
+                cout << "High score stays: " << highScore << "." << endl;
+            }
+            break;
         }
 
         attemptsLeft--;
@@ -62,11 +91,16 @@ int main() {
         }
     }
 
-    cout << "Game over. You failed to unlock the puzzle." << endl;
-    cout << "Secret number was " << secret << "." << endl;
+    if (!solved) {
+        cout << "Game over. You failed to unlock the puzzle." << endl;
+        cout << "Secret number was " << secret << "." << endl;
+        cout << "Your score: 0" << endl;
+        cout << "High score remains: " << highScore << "." << endl;
 
-    cout << "Lock cooldown engaged for 5 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(5));
-    cout << "You can retry after cooldown." << endl;
+        cout << "Lock cooldown engaged for 5 seconds..." << endl;
+        this_thread::sleep_for(chrono::seconds(5));
+        cout << "You can retry after cooldown." << endl;
+    }
+
     return 0;
 }
