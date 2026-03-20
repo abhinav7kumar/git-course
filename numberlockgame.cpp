@@ -4,6 +4,7 @@
 #include <ctime>
 #include <thread>
 #include <chrono>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -65,6 +66,7 @@ int main() {
         int secret = rand() % maxNumber + 1;
         int attemptsLeft = maxAttempts;
         bool usedHint = false;
+        vector<int> guessHistory;
 
         cout << "Guess the secret number in range 1 to " << maxNumber << ".\n";
         cout << "Tip: enter 0 to unlock one bonus hint (odd/even)." << endl;
@@ -88,6 +90,13 @@ int main() {
                 }
             }
 
+            if (guess < 1 || guess > maxNumber) {
+                cout << "Invalid guess. Enter a number between 1 and " << maxNumber << "." << endl;
+                continue;
+            }
+
+            guessHistory.push_back(guess);
+
             if (guess == secret) {
                 solved = true;
                 finalScore = attemptsLeft * 10;
@@ -95,6 +104,10 @@ int main() {
 
                 cout << "Correct! Puzzle unlocked." << endl;
                 cout << "Your score: " << finalScore << " (" << (usedHint ? "hint used" : "no hint") << ")" << endl;
+                cout << "Guess history: ";
+                for (size_t i = 0; i < guessHistory.size(); ++i) {
+                    cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
+                }
 
                 if (finalScore > highScore) {
                     highScore = finalScore;
@@ -141,6 +154,13 @@ int main() {
             gamesPlayed++;
             cout << "Game over. You failed to unlock the puzzle." << endl;
             cout << "Secret number was " << secret << "." << endl;
+            cout << "Your guesses: ";
+            for (size_t i = 0; i < guessHistory.size(); ++i) {
+                cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
+            }
+            if (guessHistory.empty()) {
+                cout << "(No valid guesses entered this round)\n";
+            }
             cout << "Your score: 0" << endl;
             cout << "High score remains: " << highScore << "." << endl;
 
