@@ -10,7 +10,7 @@ using namespace std;
 int main() {
     srand((unsigned int) time(nullptr));
     cout << "Welcome to the Number Lock Puzzle!" << endl;
-    cout << "You can choose difficulty and use one hint during the game." << endl;
+    cout << "You can choose difficulty and use up to three hints during the game." << endl;
 
     int highScore = 0;
     int bestStreak = 0;
@@ -105,11 +105,13 @@ int main() {
         int attemptsLeft = maxAttempts;
         bool usedHint = false;
         bool usedRangeHint = false;
+        bool usedDivisibilityHint = false;
         vector<int> guessHistory;
 
         cout << "Guess the secret number in range 1 to " << maxNumber << ".\n";
         cout << "Tip: enter 0 to unlock one bonus hint (odd/even)." << endl;
         cout << "Tip: enter -1 to unlock a second bonus hint (range half)." << endl;
+        cout << "Tip: enter -2 to unlock a third bonus hint (divisibility by 3/5)." << endl;
 
         bool solved = false;
         int finalScore = 0;
@@ -146,6 +148,19 @@ int main() {
                 }
             }
 
+            if (guess == -2) {
+                if (!usedDivisibilityHint) {
+                    usedDivisibilityHint = true;
+                    bool div3 = (secret % 3 == 0);
+                    bool div5 = (secret % 5 == 0);
+                    cout << "Divisibility hint: " << (div3 ? "divisible by 3" : "not divisible by 3") << ", " << (div5 ? "divisible by 5" : "not divisible by 5") << "." << endl;
+                    continue;
+                } else {
+                    cout << "Divisibility hint already used. No extra divisibility hints available.\n";
+                    continue;
+                }
+            }
+
             if (guess < 1 || guess > maxNumber) {
                 cout << "Invalid guess. Enter a number between 1 and " << maxNumber << "." << endl;
                 continue;
@@ -157,9 +172,12 @@ int main() {
                 solved = true;
                 finalScore = attemptsLeft * 10;
                 if (usedHint) finalScore = max(0, finalScore - 15);
+                if (usedRangeHint) finalScore = max(0, finalScore - 10);
+                if (usedDivisibilityHint) finalScore = max(0, finalScore - 10);
 
                 cout << "Correct! Puzzle unlocked." << endl;
-                cout << "Your score: " << finalScore << " (" << (usedHint ? "hint used" : "no hint") << ")" << endl;
+                int hintCount = (usedHint ? 1 : 0) + (usedRangeHint ? 1 : 0) + (usedDivisibilityHint ? 1 : 0);
+                cout << "Your score: " << finalScore << " (" << hintCount << " hint" << (hintCount == 1 ? "" : "s") << " used)" << endl;
                 cout << "Guess history: ";
                 for (size_t i = 0; i < guessHistory.size(); ++i) {
                     cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
