@@ -57,8 +57,8 @@ int main() {
 
         do {
             cout << "Select difficulty: 1) Easy (1-10, 8 attempts) 2) Medium (1-20, 6 attempts) 3) Hard (1-50, 4 attempts)\n";
-            cout << "4) Show current stats 5) Reset all stats\n";
-            cout << "Enter 1, 2, 3, 4 or 5: ";
+            cout << "4) Show current stats 5) Reset all stats 6) Custom difficulty\n";
+            cout << "Enter 1, 2, 3, 4, 5 or 6: ";
             cin >> choice;
 
             if (choice == 4) {
@@ -92,13 +92,25 @@ int main() {
                 continue;
             }
 
-            if (choice < 1 || choice > 3) {
-                cout << "Invalid option. Please enter 1, 2, 3, 4, or 5.\n";
+            if (choice < 1 || choice > 6) {
+                cout << "Invalid option. Please enter 1, 2, 3, 4, 5, or 6.\n";
             }
-        } while (choice < 1 || choice > 3);
+        } while (choice < 1 || choice > 6);
 
         if (choice == 1) { maxNumber = 10; maxAttempts = 8; }
         else if (choice == 2) { maxNumber = 20; maxAttempts = 6; }
+        else if (choice == 3) { maxNumber = 50; maxAttempts = 4; }
+        else if (choice == 6) {
+            cout << "Enter custom max number (5-100): ";
+            cin >> maxNumber;
+            if (maxNumber < 5) maxNumber = 5;
+            if (maxNumber > 100) maxNumber = 100;
+            cout << "Enter custom attempts (1-20): ";
+            cin >> maxAttempts;
+            if (maxAttempts < 1) maxAttempts = 1;
+            if (maxAttempts > 20) maxAttempts = 20;
+            cout << "Custom challenge set: 1 to " << maxNumber << ", " << maxAttempts << " attempts.\n";
+        }
         else { maxNumber = 50; maxAttempts = 4; }
 
         int secret = rand() % maxNumber + 1;
