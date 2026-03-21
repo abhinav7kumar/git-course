@@ -55,9 +55,47 @@ int main() {
         int maxAttempts;
         int maxNumber;
 
-        cout << "Select difficulty: 1) Easy (1-10, 8 attempts) 2) Medium (1-20, 6 attempts) 3) Hard (1-50, 4 attempts)\n";
-        cout << "Enter 1, 2, or 3: ";
-        cin >> choice;
+        do {
+            cout << "Select difficulty: 1) Easy (1-10, 8 attempts) 2) Medium (1-20, 6 attempts) 3) Hard (1-50, 4 attempts)\n";
+            cout << "4) Show current stats 5) Reset all stats\n";
+            cout << "Enter 1, 2, 3, 4 or 5: ";
+            cin >> choice;
+
+            if (choice == 4) {
+                cout << "\n=== Current Stats ===\n";
+                cout << "High score: " << highScore << "\n";
+                cout << "Best streak: " << bestStreak << "\n";
+                cout << "Games played: " << gamesPlayed << "\n";
+                cout << "Wins: " << wins << "\n";
+                cout << "Win rate: " << (gamesPlayed > 0 ? (wins * 100 / gamesPlayed) : 0) << "%\n";
+                cout << "Current streak: " << currentStreak << "\n";
+                cout << "======================\n\n";
+                continue;
+            }
+
+            if (choice == 5) {
+                cout << "\nResetting all stats...\n";
+                highScore = 0;
+                bestStreak = 0;
+                gamesPlayed = 0;
+                wins = 0;
+                currentStreak = 0;
+
+                ofstream out1("highscore.txt");
+                if (out1) out1 << highScore;
+                ofstream out2("beststreak.txt");
+                if (out2) out2 << bestStreak;
+                ofstream out3("stats.txt");
+                if (out3) out3 << gamesPlayed << " " << wins;
+
+                cout << "All stats reset.\n\n";
+                continue;
+            }
+
+            if (choice < 1 || choice > 3) {
+                cout << "Invalid option. Please enter 1, 2, 3, 4, or 5.\n";
+            }
+        } while (choice < 1 || choice > 3);
 
         if (choice == 1) { maxNumber = 10; maxAttempts = 8; }
         else if (choice == 2) { maxNumber = 20; maxAttempts = 6; }
