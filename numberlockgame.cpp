@@ -104,10 +104,12 @@ int main() {
         int secret = rand() % maxNumber + 1;
         int attemptsLeft = maxAttempts;
         bool usedHint = false;
+        bool usedRangeHint = false;
         vector<int> guessHistory;
 
         cout << "Guess the secret number in range 1 to " << maxNumber << ".\n";
         cout << "Tip: enter 0 to unlock one bonus hint (odd/even)." << endl;
+        cout << "Tip: enter -1 to unlock a second bonus hint (range half)." << endl;
 
         bool solved = false;
         int finalScore = 0;
@@ -123,7 +125,23 @@ int main() {
                     cout << "Hint: The secret number is " << (secret % 2 == 0 ? "even" : "odd") << "." << endl;
                     continue;
                 } else {
-                    cout << "Hint already used. No extra hints available." << endl;
+                    cout << "Hint already used. No extra hints available for odd/even.\n";
+                    continue;
+                }
+            }
+
+            if (guess == -1) {
+                if (!usedRangeHint) {
+                    usedRangeHint = true;
+                    int mid = maxNumber / 2;
+                    if (secret <= mid) {
+                        cout << "Range hint: The number is in the lower half (1 to " << mid << ")." << endl;
+                    } else {
+                        cout << "Range hint: The number is in the upper half (" << (mid + 1) << " to " << maxNumber << ")." << endl;
+                    }
+                    continue;
+                } else {
+                    cout << "Range hint already used. No extra range hints available.\n";
                     continue;
                 }
             }
