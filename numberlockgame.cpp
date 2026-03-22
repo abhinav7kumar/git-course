@@ -59,7 +59,8 @@ int main() {
         do {
             cout << "Select difficulty: 1) Easy (1-10, 8 attempts) 2) Medium (1-20, 6 attempts) 3) Hard (1-50, 4 attempts)\n";
             cout << "4) Show current stats 5) Reset all stats 6) Custom difficulty\n";
-            cout << "Enter 1, 2, 3, 4, 5 or 6: ";
+            cout << "7) View game history\n";
+            cout << "Enter 1, 2, 3, 4, 5, 6 or 7: ";
             cin >> choice;
 
             if (choice == 4) {
@@ -71,6 +72,24 @@ int main() {
                 cout << "Win rate: " << (gamesPlayed > 0 ? (wins * 100 / gamesPlayed) : 0) << "%\n";
                 cout << "Current streak: " << currentStreak << "\n";
                 cout << "======================\n\n";
+                continue;
+            }
+
+            if (choice == 7) {
+                cout << "\n=== Game History ===\n";
+                ifstream historyFile("gamehistory.txt");
+                if (!historyFile) {
+                    cout << "No game history yet. Play some games!\n";
+                } else {
+                    string line;
+                    int gameNum = 1;
+                    while (getline(historyFile, line)) {
+                        cout << "Game " << gameNum << ": " << line << "\n";
+                        gameNum++;
+                    }
+                    historyFile.close();
+                }
+                cout << "===================\n\n";
                 continue;
             }
 
@@ -93,10 +112,15 @@ int main() {
                 continue;
             }
 
-            if (choice < 1 || choice > 6) {
-                cout << "Invalid option. Please enter 1, 2, 3, 4, 5, or 6.\n";
+            if (choice < 1 || choice > 7) {
+                cout << "Invalid option. Please enter 1, 2, 3, 4, 5, 6, or 7.\n";
             }
-        } while (choice < 1 || choice > 6);
+        } while (choice < 1 || choice > 7);
+
+        // Skip game setup if user selected a non-game menu option
+        if (choice == 4 || choice == 5 || choice == 7) {
+            continue;
+        }
 
         double difficultyMultiplier = 1.0;
         string difficultyName = "";
@@ -341,6 +365,23 @@ int main() {
                     ofstream statsOut("stats.txt");
                     if (statsOut) statsOut << gamesPlayed << " " << wins;
                 }
+
+                // Save game history
+                {
+                    ofstream historyOut("gamehistory.txt", ios::app);
+                    if (historyOut) {
+                        historyOut << difficultyName << " WIN - Score: " << finalScore << ", Time: " << elapsedSeconds 
+                                   << "s, Attempts used: " << (maxAttempts - attemptsLeft) << "/" << maxAttempts;
+                        if (usedHint || usedRangeHint || usedDivisibilityHint || usedUndo) {
+                            historyOut << " | Used:";
+                            if (usedHint) historyOut << " Odd/Even";
+                            if (usedRangeHint) historyOut << " Range";
+                            if (usedDivisibilityHint) historyOut << " Divisibility";
+                            if (usedUndo) historyOut << " Undo";
+                        }
+                        historyOut << "\n";
+                    }
+                }
                 break;
             }
 
@@ -415,6 +456,32 @@ int main() {
             cout << "Lock cooldown engaged for 5 seconds..." << endl;
             this_thread::sleep_for(chrono::seconds(5));
             cout << "You can retry after cooldown." << endl;
+
+            // Update stats file for loss
+            {
+                ofstream statsOut("stats.txt");
+                if (statsOut) statsOut << gamesPlayed << " " << wins;
+            }
+
+            // Save game history for loss
+            {
+                auto gameEndTime = chrono::high_resolution_clock::now();
+                auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(gameEndTime - gameStartTime).count();
+                
+                ofstream historyOut("gamehistory.txt", ios::app);
+                if (historyOut) {
+                    historyOut << difficultyName << " LOSS - Score: 0, Time: " << elapsedSeconds 
+                               << "s, Attempts used: " << (maxAttempts - attemptsLeft) << "/" << maxAttempts;
+                    if (usedHint || usedRangeHint || usedDivisibilityHint || usedUndo) {
+                        historyOut << " | Used:";
+                        if (usedHint) historyOut << " Odd/Even";
+                        if (usedRangeHint) historyOut << " Range";
+                        if (usedDivisibilityHint) historyOut << " Divisibility";
+                        if (usedUndo) historyOut << " Undo";
+                    }
+                    historyOut << "\n";
+                }
+            }
         }
 
         char playAgain;
