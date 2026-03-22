@@ -145,6 +145,8 @@ int main() {
         bool usedRangeHint = false;
         bool usedDivisibilityHint = false;
         vector<int> guessHistory;
+        vector<int> tooLowNumbers;
+        vector<int> tooHighNumbers;
         auto gameStartTime = chrono::high_resolution_clock::now();
 
         cout << "Guess the secret number in range 1 to " << maxNumber << ".\n";
@@ -241,6 +243,25 @@ int main() {
                 for (size_t i = 0; i < guessHistory.size(); ++i) {
                     cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
                 }
+                
+                // Display wrong numbers summary on win
+                cout << "\nWrong Numbers Summary:\n";
+                if (!tooLowNumbers.empty()) {
+                    cout << "Too low (" << tooLowNumbers.size() << "): ";
+                    for (size_t i = 0; i < tooLowNumbers.size(); ++i) {
+                        cout << tooLowNumbers[i] << (i + 1 < tooLowNumbers.size() ? ", " : "\n");
+                    }
+                }
+                if (!tooHighNumbers.empty()) {
+                    cout << "Too high (" << tooHighNumbers.size() << "): ";
+                    for (size_t i = 0; i < tooHighNumbers.size(); ++i) {
+                        cout << tooHighNumbers[i] << (i + 1 < tooHighNumbers.size() ? ", " : "\n");
+                    }
+                }
+                if (tooLowNumbers.empty() && tooHighNumbers.empty()) {
+                    cout << "(No wrong guesses - perfect play!)\n";
+                }
+                cout << "\n";
 
                 if (finalScore > highScore) {
                     highScore = finalScore;
@@ -273,10 +294,30 @@ int main() {
 
             attemptsLeft--;
 
-            if (guess < secret)
+            if (guess < secret) {
                 cout << "Too low!" << endl;
-            else
+                tooLowNumbers.push_back(guess);
+            }
+            else {
                 cout << "Too high!" << endl;
+                tooHighNumbers.push_back(guess);
+            }
+
+            // Display wrong numbers tracker
+            cout << "\n--- Wrong Numbers Tracker ---\n";
+            if (!tooLowNumbers.empty()) {
+                cout << "Too low: ";
+                for (size_t i = 0; i < tooLowNumbers.size(); ++i) {
+                    cout << tooLowNumbers[i] << (i + 1 < tooLowNumbers.size() ? ", " : "\n");
+                }
+            }
+            if (!tooHighNumbers.empty()) {
+                cout << "Too high: ";
+                for (size_t i = 0; i < tooHighNumbers.size(); ++i) {
+                    cout << tooHighNumbers[i] << (i + 1 < tooHighNumbers.size() ? ", " : "\n");
+                }
+            }
+            cout << "-----------------------------\n\n";
 
             if (attemptsLeft > 0) {
                 cout << "Try again.\n";
@@ -294,6 +335,25 @@ int main() {
             if (guessHistory.empty()) {
                 cout << "(No valid guesses entered this round)\n";
             }
+            
+            // Display wrong numbers summary on loss
+            cout << "\nWrong Numbers Summary:\n";
+            if (!tooLowNumbers.empty()) {
+                cout << "Too low (" << tooLowNumbers.size() << "): ";
+                for (size_t i = 0; i < tooLowNumbers.size(); ++i) {
+                    cout << tooLowNumbers[i] << (i + 1 < tooLowNumbers.size() ? ", " : "\n");
+                }
+            }
+            if (!tooHighNumbers.empty()) {
+                cout << "Too high (" << tooHighNumbers.size() << "): ";
+                for (size_t i = 0; i < tooHighNumbers.size(); ++i) {
+                    cout << tooHighNumbers[i] << (i + 1 < tooHighNumbers.size() ? ", " : "\n");
+                }
+            }
+            if (tooLowNumbers.empty() && tooHighNumbers.empty()) {
+                cout << "(No guesses made before running out of attempts)\n";
+            }
+            cout << "\n";
             cout << "Your score: 0" << endl;
             cout << "High score remains: " << highScore << "." << endl;
 
