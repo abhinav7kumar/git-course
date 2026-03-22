@@ -5,6 +5,7 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -144,6 +145,7 @@ int main() {
         bool usedHint = false;
         bool usedRangeHint = false;
         bool usedDivisibilityHint = false;
+        bool usedUndo = false;
         vector<int> guessHistory;
         vector<int> tooLowNumbers;
         vector<int> tooHighNumbers;
@@ -153,6 +155,7 @@ int main() {
         cout << "Tip: enter 0 to unlock one bonus hint (odd/even)." << endl;
         cout << "Tip: enter -1 to unlock a second bonus hint (range half)." << endl;
         cout << "Tip: enter -2 to unlock a third bonus hint (divisibility by 3/5)." << endl;
+        cout << "Tip: enter -3 to undo your last guess (costs no attempts, but can only use once)." << endl;
         cout << "Bonus: Solve faster for extra points!\n";
 
         bool solved = false;
@@ -203,6 +206,54 @@ int main() {
                 }
             }
 
+            if (guess == -3) {
+                if (!usedUndo) {
+                    if (guessHistory.empty()) {
+                        cout << "Cannot undo - no guesses made yet.\n";
+                        continue;
+                    }
+                    usedUndo = true;
+                    int lastGuess = guessHistory.back();
+                    guessHistory.pop_back();
+                    
+                    // Remove from wrong numbers tracker
+                    if (lastGuess < secret) {
+                        auto it = find(tooLowNumbers.begin(), tooLowNumbers.end(), lastGuess);
+                        if (it != tooLowNumbers.end()) {
+                            tooLowNumbers.erase(it);
+                        }
+                    } else {
+                        auto it = find(tooHighNumbers.begin(), tooHighNumbers.end(), lastGuess);
+                        if (it != tooHighNumbers.end()) {
+                            tooHighNumbers.erase(it);
+                        }
+                    }
+                    
+                    cout << "Guess " << lastGuess << " has been undone!\n";
+                    cout << "Updated Wrong Numbers Tracker:\n";
+                    if (!tooLowNumbers.empty()) {
+                        cout << "Too low: ";
+                        for (size_t i = 0; i < tooLowNumbers.size(); ++i) {
+                            cout << tooLowNumbers[i] << (i + 1 < tooLowNumbers.size() ? ", " : "\n");
+                        }
+                    }
+                    if (!tooHighNumbers.empty()) {
+                        cout << "Too high: ";
+                        for (size_t i = 0; i < tooHighNumbers.size(); ++i) {
+                            cout << tooHighNumbers[i] << (i + 1 < tooHighNumbers.size() ? ", " : "\n");
+                        }
+                    }
+                    if (tooLowNumbers.empty() && tooHighNumbers.empty()) {
+                        cout << "(No wrong guesses in history)\n";
+                    }
+                    cout << "\n";
+                    continue;
+                } else {
+                    cout << "Undo already used. You can only undo once per game.\n";
+                    continue;
+                }
+            }
+
             if (guess < 1 || guess > maxNumber) {
                 cout << "Invalid guess. Enter a number between 1 and " << maxNumber << "." << endl;
                 continue;
@@ -230,7 +281,8 @@ int main() {
                 }
                 
                 int hintPenalty = (usedHint ? 15 : 0) + (usedRangeHint ? 10 : 0) + (usedDivisibilityHint ? 10 : 0);
-                int scoreBeforeMultiplier = baseScore + timeBonus - hintPenalty;
+                int undoPenalty = (usedUndo ? 20 : 0);
+                int scoreBeforeMultiplier = baseScore + timeBonus - hintPenalty - undoPenalty;
                 finalScore = (int)(scoreBeforeMultiplier * difficultyMultiplier);
                 finalScore = max(0, finalScore);
 
@@ -238,7 +290,7 @@ int main() {
                 int hintCount = (usedHint ? 1 : 0) + (usedRangeHint ? 1 : 0) + (usedDivisibilityHint ? 1 : 0);
                 cout << "Your score: " << finalScore << " (" << difficultyName << " difficulty x" << difficultyMultiplier 
                     << " multiplier, base: " << scoreBeforeMultiplier << ", " << hintCount << " hint" 
-                    << (hintCount == 1 ? "" : "s") << " used)" << endl;
+                    << (hintCount == 1 ? "" : "s") << (usedUndo ? ", 1 undo used" : "") << ")" << endl;
                 cout << "Guess history: ";
                 for (size_t i = 0; i < guessHistory.size(); ++i) {
                     cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
