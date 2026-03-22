@@ -97,9 +97,27 @@ int main() {
             }
         } while (choice < 1 || choice > 6);
 
-        if (choice == 1) { maxNumber = 10; maxAttempts = 8; }
-        else if (choice == 2) { maxNumber = 20; maxAttempts = 6; }
-        else if (choice == 3) { maxNumber = 50; maxAttempts = 4; }
+        double difficultyMultiplier = 1.0;
+        string difficultyName = "";
+        
+        if (choice == 1) { 
+            maxNumber = 10; 
+            maxAttempts = 8; 
+            difficultyMultiplier = 1.0;
+            difficultyName = "Easy";
+        }
+        else if (choice == 2) { 
+            maxNumber = 20; 
+            maxAttempts = 6; 
+            difficultyMultiplier = 1.5;
+            difficultyName = "Medium";
+        }
+        else if (choice == 3) { 
+            maxNumber = 50; 
+            maxAttempts = 4; 
+            difficultyMultiplier = 2.0;
+            difficultyName = "Hard";
+        }
         else if (choice == 6) {
             cout << "Enter custom max number (5-100): ";
             cin >> maxNumber;
@@ -110,8 +128,16 @@ int main() {
             if (maxAttempts < 1) maxAttempts = 1;
             if (maxAttempts > 20) maxAttempts = 20;
             cout << "Custom challenge set: 1 to " << maxNumber << ", " << maxAttempts << " attempts.\n";
+            // Custom difficulty multiplier based on range
+            difficultyMultiplier = 1.0 + (maxNumber - 5) / 95.0;
+            difficultyName = "Custom";
         }
-        else { maxNumber = 50; maxAttempts = 4; }
+        else { 
+            maxNumber = 50; 
+            maxAttempts = 4; 
+            difficultyMultiplier = 2.0;
+            difficultyName = "Hard";
+        }
 
         int secret = rand() % maxNumber + 1;
         int attemptsLeft = maxAttempts;
@@ -187,7 +213,7 @@ int main() {
                 auto gameEndTime = chrono::high_resolution_clock::now();
                 auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(gameEndTime - gameStartTime).count();
                 
-                finalScore = attemptsLeft * 10;
+                int baseScore = attemptsLeft * 10;
                 
                 // Time-based bonus: Award points for solving quickly
                 int timeBonus = 0;
@@ -201,17 +227,16 @@ int main() {
                     timeBonus = 10;  // Solved in 2 minutes
                 }
                 
-                finalScore += timeBonus;
-                
-                if (usedHint) finalScore = max(0, finalScore - 15);
-                if (usedRangeHint) finalScore = max(0, finalScore - 10);
-                if (usedDivisibilityHint) finalScore = max(0, finalScore - 10);
+                int hintPenalty = (usedHint ? 15 : 0) + (usedRangeHint ? 10 : 0) + (usedDivisibilityHint ? 10 : 0);
+                int scoreBeforeMultiplier = baseScore + timeBonus - hintPenalty;
+                finalScore = (int)(scoreBeforeMultiplier * difficultyMultiplier);
+                finalScore = max(0, finalScore);
 
                 cout << "Correct! Puzzle unlocked in " << elapsedSeconds << " seconds." << endl;
                 int hintCount = (usedHint ? 1 : 0) + (usedRangeHint ? 1 : 0) + (usedDivisibilityHint ? 1 : 0);
-                cout << "Your score: " << finalScore << " (base: " << (attemptsLeft * 10 + timeBonus - 
-                    ((usedHint ? 15 : 0) + (usedRangeHint ? 10 : 0) + (usedDivisibilityHint ? 10 : 0))) << 
-                    " + time bonus: " << timeBonus << ", " << hintCount << " hint" << (hintCount == 1 ? "" : "s") << " used)" << endl;
+                cout << "Your score: " << finalScore << " (" << difficultyName << " difficulty x" << difficultyMultiplier 
+                    << " multiplier, base: " << scoreBeforeMultiplier << ", " << hintCount << " hint" 
+                    << (hintCount == 1 ? "" : "s") << " used)" << endl;
                 cout << "Guess history: ";
                 for (size_t i = 0; i < guessHistory.size(); ++i) {
                     cout << guessHistory[i] << (i + 1 < guessHistory.size() ? ", " : "\n");
