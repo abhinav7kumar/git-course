@@ -6,6 +6,13 @@ void showWelcome() {
     printf("===== Snake and Ladder Game =====\n");
 }
 
+void displayBoard(int p1, int p2) {
+    printf("\nCurrent Board:\n");
+    printf("Player 1: %d\n", p1);
+    printf("Player 2: %d\n", p2);
+    printf("Goal: 100\n\n");
+}
+
 int rollDice() {
     return (rand() % 6) + 1;
 }
@@ -34,6 +41,7 @@ int main() {
                 player1 += dice;
             player1 = checkSnakesAndLadders(player1);
             printf("Player 1 position: %d\n", player1);
+            displayBoard(player1, player2);
             turn = 2;
         } else {
             printf("\nPlayer 2 rolled: %d\n", dice);
@@ -41,6 +49,7 @@ int main() {
                 player2 += dice;
             player2 = checkSnakesAndLadders(player2);
             printf("Player 2 position: %d\n", player2);
+            displayBoard(player1, player2);
             turn = 1;
         }
     }
