@@ -29,6 +29,7 @@ int main() {
     srand(time(0));
     int player1 = 0, player2 = 0;
     int turn = 1;
+    int turns = 0;
     char name1[50], name2[50];
 
     showWelcome();
@@ -58,12 +59,15 @@ int main() {
             displayBoard(player1, player2, name1, name2);
             turn = 1;
         }
+        turns++;
     }
 
     if (player1 == 100)
         printf("\n%s Wins!\n", name1);
     else
         printf("\n%s Wins!\n", name2);
+
+    printf("Game completed in %d turns.\n", turns);
 
     return 0;
 }
