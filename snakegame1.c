@@ -27,10 +27,8 @@ int checkSnakesAndLadders(int position) {
 
 int main() {
     srand(time(0));
-    int player1 = 0, player2 = 0;
-    int turn = 1;
-    int turns = 0;
     char name1[50], name2[50];
+    char playAgain;
 
     showWelcome();
 
@@ -38,6 +36,11 @@ int main() {
     scanf("%s", name1);
     printf("Enter Player 2 name: ");
     scanf("%s", name2);
+
+    do {
+        int player1 = 0, player2 = 0;
+        int turn = 1;
+        int turns = 0;
 
     while (player1 < 100 && player2 < 100) {
         int dice = rollDice();
@@ -68,6 +71,11 @@ int main() {
         printf("\n%s Wins!\n", name2);
 
     printf("Game completed in %d turns.\n", turns);
+
+    printf("Play again? (y/n): ");
+    scanf(" %c", &playAgain);
+
+    } while (playAgain == 'y' || playAgain == 'Y');
 
     return 0;
 }
