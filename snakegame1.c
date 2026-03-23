@@ -21,7 +21,13 @@ int checkSnakesAndLadders(int position) {
     if (position == 4) { printf("Ladder! 4 -> 14\n"); return 14; }
     if (position == 9) { printf("Ladder! 9 -> 31\n"); return 31; }
     if (position == 17) { printf("Snake! 17 -> 7\n"); return 7; }
+    if (position == 21) { printf("Ladder! 21 -> 42\n"); return 42; }
+    if (position == 28) { printf("Snake! 28 -> 12\n"); return 12; }
     if (position == 54) { printf("Snake! 54 -> 34\n"); return 34; }
+    if (position == 63) { printf("Ladder! 63 -> 81\n"); return 81; }
+    if (position == 87) { printf("Snake! 87 -> 36\n"); return 36; }
+    if (position == 95) { printf("Snake! 95 -> 73\n"); return 73; }
+    if (position == 99) { printf("Snake! 99 -> 5\n"); return 5; }
     return position;
 }
 
