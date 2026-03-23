@@ -6,10 +6,10 @@ void showWelcome() {
     printf("===== Snake and Ladder Game =====\n");
 }
 
-void displayBoard(int p1, int p2) {
+void displayBoard(int p1, int p2, char *n1, char *n2) {
     printf("\nCurrent Board:\n");
-    printf("Player 1: %d\n", p1);
-    printf("Player 2: %d\n", p2);
+    printf("%s: %d\n", n1, p1);
+    printf("%s: %d\n", n2, p2);
     printf("Goal: 100\n\n");
 }
 
@@ -29,35 +29,41 @@ int main() {
     srand(time(0));
     int player1 = 0, player2 = 0;
     int turn = 1;
+    char name1[50], name2[50];
 
     showWelcome();
+
+    printf("Enter Player 1 name: ");
+    scanf("%s", name1);
+    printf("Enter Player 2 name: ");
+    scanf("%s", name2);
 
     while (player1 < 100 && player2 < 100) {
         int dice = rollDice();
 
         if (turn == 1) {
-            printf("\nPlayer 1 rolled: %d\n", dice);
+            printf("\n%s rolled: %d\n", name1, dice);
             if (player1 + dice <= 100)
                 player1 += dice;
             player1 = checkSnakesAndLadders(player1);
-            printf("Player 1 position: %d\n", player1);
-            displayBoard(player1, player2);
+            printf("%s position: %d\n", name1, player1);
+            displayBoard(player1, player2, name1, name2);
             turn = 2;
         } else {
-            printf("\nPlayer 2 rolled: %d\n", dice);
+            printf("\n%s rolled: %d\n", name2, dice);
             if (player2 + dice <= 100)
                 player2 += dice;
             player2 = checkSnakesAndLadders(player2);
-            printf("Player 2 position: %d\n", player2);
-            displayBoard(player1, player2);
+            printf("%s position: %d\n", name2, player2);
+            displayBoard(player1, player2, name1, name2);
             turn = 1;
         }
     }
 
     if (player1 == 100)
-        printf("\nPlayer 1 Wins!\n");
+        printf("\n%s Wins!\n", name1);
     else
-        printf("\nPlayer 2 Wins!\n");
+        printf("\n%s Wins!\n", name2);
 
     return 0;
 }
