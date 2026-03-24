@@ -13,6 +13,31 @@ void displayBoard(int p1, int p2, char *n1, char *n2) {
     printf("Goal: 100\n\n");
 }
 
+void displayVisualBoard(int p1, int p2) {
+    printf("\nVisual Board:\n");
+    for (int row = 10; row >= 1; row--) {
+        for (int col = 1; col <= 10; col++) {
+            int pos;
+            if (row % 2 == 0) {
+                pos = (row - 1) * 10 + (11 - col);
+            } else {
+                pos = (row - 1) * 10 + col;
+            }
+            if (pos == p1 && pos == p2) {
+                printf("[B] ");
+            } else if (pos == p1) {
+                printf("[1] ");
+            } else if (pos == p2) {
+                printf("[2] ");
+            } else {
+                printf("[%2d] ", pos);
+            }
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 int rollDice() {
     return (rand() % 6) + 1;
 }
@@ -58,6 +83,7 @@ int main() {
             player1 = checkSnakesAndLadders(player1);
             printf("%s position: %d\n", name1, player1);
             displayBoard(player1, player2, name1, name2);
+            displayVisualBoard(player1, player2);
             turn = 2;
         } else {
             printf("\n%s rolled: %d\n", name2, dice);
@@ -66,6 +92,7 @@ int main() {
             player2 = checkSnakesAndLadders(player2);
             printf("%s position: %d\n", name2, player2);
             displayBoard(player1, player2, name1, name2);
+            displayVisualBoard(player1, player2);
             turn = 1;
         }
         turns++;
