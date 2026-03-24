@@ -2,18 +2,21 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define MAX_PLAYERS 4
+
 void showWelcome() {
     printf("===== Snake and Ladder Game =====\n");
 }
 
-void displayBoard(int p1, int p2, char *n1, char *n2) {
+void displayBoard(int positions[], char names[][50], int numPlayers) {
     printf("\nCurrent Board:\n");
-    printf("%s: %d\n", n1, p1);
-    printf("%s: %d\n", n2, p2);
+    for (int i = 0; i < numPlayers; i++) {
+        printf("%s: %d\n", names[i], positions[i]);
+    }
     printf("Goal: 100\n\n");
 }
 
-void displayVisualBoard(int p1, int p2) {
+void displayVisualBoard(int positions[], int numPlayers) {
     printf("\nVisual Board:\n");
     for (int row = 10; row >= 1; row--) {
         for (int col = 1; col <= 10; col++) {
@@ -23,12 +26,21 @@ void displayVisualBoard(int p1, int p2) {
             } else {
                 pos = (row - 1) * 10 + col;
             }
-            if (pos == p1 && pos == p2) {
-                printf("[B] ");
-            } else if (pos == p1) {
-                printf("[1] ");
-            } else if (pos == p2) {
-                printf("[2] ");
+            int playerOnSquare = -1;
+            for (int p = 0; p < numPlayers; p++) {
+                if (positions[p] == pos) {
+                    if (playerOnSquare == -1) {
+                        playerOnSquare = p + 1;
+                    } else {
+                        playerOnSquare = 0; // multiple
+                        break;
+                    }
+                }
+            }
+            if (playerOnSquare == 0) {
+                printf("[M] ");
+            } else if (playerOnSquare > 0) {
+                printf("[%d] ", playerOnSquare);
             } else {
                 printf("[%2d] ", pos);
             }
@@ -58,57 +70,67 @@ int checkSnakesAndLadders(int position) {
 
 int main() {
     srand(time(0));
-    char name1[50], name2[50];
+    int numPlayers;
+    char names[MAX_PLAYERS][50];
+    int wins[MAX_PLAYERS] = {0};
     char playAgain;
 
     showWelcome();
 
-    printf("Enter Player 1 name: ");
-    scanf("%s", name1);
-    printf("Enter Player 2 name: ");
-    scanf("%s", name2);
-
     do {
-        int player1 = 0, player2 = 0;
-        int turn = 1;
-        int turns = 0;
-
-    while (player1 < 100 && player2 < 100) {
-        int dice = rollDice();
-
-        if (turn == 1) {
-            printf("\n%s rolled: %d\n", name1, dice);
-            if (player1 + dice <= 100)
-                player1 += dice;
-            player1 = checkSnakesAndLadders(player1);
-            printf("%s position: %d\n", name1, player1);
-            displayBoard(player1, player2, name1, name2);
-            displayVisualBoard(player1, player2);
-            turn = 2;
-        } else {
-            printf("\n%s rolled: %d\n", name2, dice);
-            if (player2 + dice <= 100)
-                player2 += dice;
-            player2 = checkSnakesAndLadders(player2);
-            printf("%s position: %d\n", name2, player2);
-            displayBoard(player1, player2, name1, name2);
-            displayVisualBoard(player1, player2);
-            turn = 1;
+        printf("Enter number of players (2-4): ");
+        scanf("%d", &numPlayers);
+        if (numPlayers < 2 || numPlayers > 4) {
+            printf("Invalid number. Must be 2-4.\n");
+            continue;
         }
-        turns++;
+        break;
+    } while (1);
+
+    for (int i = 0; i < numPlayers; i++) {
+        printf("Enter Player %d name: ", i + 1);
+        scanf("%s", names[i]);
     }
 
-    if (player1 == 100)
-        printf("\n%s Wins!\n", name1);
-    else
-        printf("\n%s Wins!\n", name2);
+    do {
+        int positions[MAX_PLAYERS] = {0};
+        int currentPlayer = 0;
+        int turns = 0;
+        int winner = -1;
 
-    printf("Game completed in %d turns.\n", turns);
+        while (winner == -1) {
+            int dice = rollDice();
+            printf("\n%s rolled: %d\n", names[currentPlayer], dice);
+            if (positions[currentPlayer] + dice <= 100) {
+                positions[currentPlayer] += dice;
+            }
+            positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
+            printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
+            displayBoard(positions, names, numPlayers);
+            displayVisualBoard(positions, numPlayers);
 
-    printf("Play again? (y/n): ");
-    scanf(" %c", &playAgain);
+            if (positions[currentPlayer] == 100) {
+                winner = currentPlayer;
+                break;
+            }
+
+            currentPlayer = (currentPlayer + 1) % numPlayers;
+            turns++;
+        }
+
+        printf("\n%s Wins!\n", names[winner]);
+        wins[winner]++;
+        printf("Game completed in %d turns.\n", turns);
+
+        printf("Play again? (y/n): ");
+        scanf(" %c", &playAgain);
 
     } while (playAgain == 'y' || playAgain == 'Y');
+
+    printf("\nFinal Scores:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("%s: %d wins\n", names[i], wins[i]);
+    }
 
     return 0;
 }
