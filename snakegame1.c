@@ -140,4 +140,7 @@ int main() {
  if (numPlayers < 2 || numPlayers > 4) {
      printf("Invalid number of players. Please enter a number between 2 and 4.\n");
      return 1;
- }
+}
+
+get("Enter Player %d name: ", i + 1);
+scanf("%s", names[i]);
