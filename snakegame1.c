@@ -68,6 +68,13 @@ int checkSnakesAndLadders(int position) {
     return position;
 }
 
+int checkSpecialSquare(int position) {
+    if (position == 23) { printf("Trap! 23 causes you to skip the next turn.\n"); return 1; }
+    if (position == 46) { printf("Trap! 46 causes you to skip the next turn.\n"); return 1; }
+    if (position == 72) { printf("Trap! 72 causes you to skip the next turn.\n"); return 1; }
+    return 0;
+}
+
 int main() {
     srand(time(0));
     int numPlayers;
@@ -95,11 +102,20 @@ int main() {
     do {
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
+        int skipTurn[MAX_PLAYERS] = {0};
         int currentPlayer = 0;
         int turns = 0;
         int winner = -1;
 
         while (winner == -1) {
+            if (skipTurn[currentPlayer]) {
+                printf("\n%s misses this turn because of a trap.\n", names[currentPlayer]);
+                skipTurn[currentPlayer] = 0;
+                currentPlayer = (currentPlayer + 1) % numPlayers;
+                turns++;
+                continue;
+            }
+
             int dice = rollDice();
             rolls[currentPlayer]++;
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
@@ -112,6 +128,9 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
+            if (checkSpecialSquare(positions[currentPlayer])) {
+                skipTurn[currentPlayer] = 1;
+            }
 
             for (int p = 0; p < numPlayers; p++) {
                 if (p != currentPlayer && positions[p] == positions[currentPlayer] && positions[currentPlayer] != 0) {
