@@ -101,8 +101,13 @@ int main() {
         while (winner == -1) {
             int dice = rollDice();
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
-            if (positions[currentPlayer] + dice <= 100) {
-                positions[currentPlayer] += dice;
+            int newPosition = positions[currentPlayer] + dice;
+            if (newPosition > 100) {
+                int bounceBack = newPosition - 100;
+                positions[currentPlayer] = 100 - bounceBack;
+                printf("%s overshot 100 and bounces back to %d\n", names[currentPlayer], positions[currentPlayer]);
+            } else {
+                positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
