@@ -114,7 +114,11 @@ int main() {
                 break;
             }
 
-            currentPlayer = (currentPlayer + 1) % numPlayers;
+            if (dice == 6) {
+                printf("%s rolled a 6 and gets an extra turn!\n", names[currentPlayer]);
+            } else {
+                currentPlayer = (currentPlayer + 1) % numPlayers;
+            }
             turns++;
         }
 
@@ -134,13 +138,3 @@ int main() {
 
     return 0;
 }
-
- printf("Welcome to the Snake and Ladder Game!\n");
- scanf("%d", &numPlayers);
- if (numPlayers < 2 || numPlayers > 4) {
-     printf("Invalid number of players. Please enter a number between 2 and 4.\n");
-     return 1;
-}
-
-get("Enter Player %d name: ", i + 1);
-scanf("%s", names[i]);
