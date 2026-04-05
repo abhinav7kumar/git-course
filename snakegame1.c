@@ -94,12 +94,14 @@ int main() {
 
     do {
         int positions[MAX_PLAYERS] = {0};
+        int rolls[MAX_PLAYERS] = {0};
         int currentPlayer = 0;
         int turns = 0;
         int winner = -1;
 
         while (winner == -1) {
             int dice = rollDice();
+            rolls[currentPlayer]++;
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
             int newPosition = positions[currentPlayer] + dice;
             if (newPosition > 100) {
@@ -138,6 +140,10 @@ int main() {
         printf("\n%s Wins!\n", names[winner]);
         wins[winner]++;
         printf("Game completed in %d turns.\n", turns);
+        printf("Rolls taken by each player:\n");
+        for (int i = 0; i < numPlayers; i++) {
+            printf("%s: %d rolls\n", names[i], rolls[i]);
+        }
 
         printf("Play again? (y/n): ");
         scanf(" %c", &playAgain);
