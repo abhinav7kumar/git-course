@@ -110,6 +110,14 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
+
+            for (int p = 0; p < numPlayers; p++) {
+                if (p != currentPlayer && positions[p] == positions[currentPlayer] && positions[currentPlayer] != 0) {
+                    positions[p] = 0;
+                    printf("%s landed on %s and bumped them back to start!\n", names[currentPlayer], names[p]);
+                }
+            }
+
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers);
