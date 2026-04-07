@@ -3,9 +3,25 @@
 #include <time.h>
 
 #define MAX_PLAYERS 4
+#define BOARD_SIZE 100
+#define NUM_POWERUPS 5
+
+typedef struct {
+    int position;
+    int type; // 0: extra turn, 1: skip opponent, 2: immunity
+    int active;
+} PowerUp;
 
 void showWelcome() {
-    printf("===== Snake and Ladder Game =====\n");
+    printf("===== Snake and Ladder Game with Power-ups =====\n");
+}
+
+void initializePowerUps(PowerUp powerUps[]) {
+    for (int i = 0; i < NUM_POWERUPS; i++) {
+        powerUps[i].position = (rand() % 99) + 1; // 1-99
+        powerUps[i].type = rand() % 3; // 0,1,2
+        powerUps[i].active = 1;
+    }
 }
 
 void displayBoard(int positions[], char names[][50], int numPlayers) {
@@ -16,7 +32,7 @@ void displayBoard(int positions[], char names[][50], int numPlayers) {
     printf("Goal: 100\n\n");
 }
 
-void displayVisualBoard(int positions[], int numPlayers) {
+void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
     printf("\nVisual Board:\n");
     for (int row = 10; row >= 1; row--) {
         for (int col = 1; col <= 10; col++) {
@@ -27,6 +43,7 @@ void displayVisualBoard(int positions[], int numPlayers) {
                 pos = (row - 1) * 10 + col;
             }
             int playerOnSquare = -1;
+            int hasPowerUp = 0;
             for (int p = 0; p < numPlayers; p++) {
                 if (positions[p] == pos) {
                     if (playerOnSquare == -1) {
@@ -37,10 +54,18 @@ void displayVisualBoard(int positions[], int numPlayers) {
                     }
                 }
             }
+            for (int pu = 0; pu < NUM_POWERUPS; pu++) {
+                if (powerUps[pu].active && powerUps[pu].position == pos) {
+                    hasPowerUp = 1;
+                    break;
+                }
+            }
             if (playerOnSquare == 0) {
                 printf("[M] ");
             } else if (playerOnSquare > 0) {
                 printf("[%d] ", playerOnSquare);
+            } else if (hasPowerUp) {
+                printf("[P] ");
             } else {
                 printf("[%2d] ", pos);
             }
@@ -75,6 +100,27 @@ int checkSpecialSquare(int position) {
     return 0;
 }
 
+int checkPowerUp(int position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50]) {
+    for (int pu = 0; pu < NUM_POWERUPS; pu++) {
+        if (powerUps[pu].active && powerUps[pu].position == position) {
+            powerUps[pu].active = 0; // deactivate
+            if (powerUps[pu].type == 0) {
+                printf("Power-up! %s gets an extra turn!\n", names[currentPlayer]);
+                return 1; // extra turn
+            } else if (powerUps[pu].type == 1) {
+                int target = (currentPlayer + 1) % numPlayers;
+                skipTurn[target] = 1;
+                printf("Power-up! %s skips %s's next turn!\n", names[currentPlayer], names[target]);
+            } else if (powerUps[pu].type == 2) {
+                printf("Power-up! %s is now immune to traps!\n", names[currentPlayer]);
+                return 2; // immunity
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
 int main() {
     srand(time(0));
     int numPlayers;
@@ -103,6 +149,9 @@ int main() {
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
         int skipTurn[MAX_PLAYERS] = {0};
+        int immunity[MAX_PLAYERS] = {0};
+        PowerUp powerUps[NUM_POWERUPS];
+        initializePowerUps(powerUps);
         int currentPlayer = 0;
         int turns = 0;
         int winner = -1;
@@ -128,8 +177,18 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
-            if (checkSpecialSquare(positions[currentPlayer])) {
-                skipTurn[currentPlayer] = 1;
+            int powerUpEffect = checkPowerUp(positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names);
+            int trapHit = checkSpecialSquare(positions[currentPlayer]);
+            if (trapHit) {
+                if (immunity[currentPlayer]) {
+                    printf("Immunity used! %s avoids the trap.\n", names[currentPlayer]);
+                    immunity[currentPlayer] = 0;
+                } else {
+                    skipTurn[currentPlayer] = 1;
+                }
+            }
+            if (powerUpEffect == 2) {
+                immunity[currentPlayer] = 1;
             }
 
             for (int p = 0; p < numPlayers; p++) {
@@ -141,15 +200,18 @@ int main() {
 
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
-            displayVisualBoard(positions, numPlayers);
+            displayVisualBoard(positions, numPlayers, powerUps);
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
                 break;
             }
 
-            if (dice == 6) {
-                printf("%s rolled a 6 and gets an extra turn!\n", names[currentPlayer]);
+            int extraTurn = (dice == 6) || (powerUpEffect == 1);
+            if (extraTurn) {
+                if (dice == 6) {
+                    printf("%s rolled a 6 and gets an extra turn!\n", names[currentPlayer]);
+                }
             } else {
                 currentPlayer = (currentPlayer + 1) % numPlayers;
             }
