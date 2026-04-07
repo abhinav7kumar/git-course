@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h> // for Sleep
 
 #define MAX_PLAYERS 4
 #define BOARD_SIZE 100
@@ -22,6 +23,18 @@ void initializePowerUps(PowerUp powerUps[]) {
         powerUps[i].type = rand() % 3; // 0,1,2
         powerUps[i].active = 1;
     }
+}
+
+void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers) {
+    printf("\nPlayer Status:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("%s: ", names[i]);
+        if (immunity[i]) printf("Immune ");
+        if (skipTurn[i]) printf("Skipping next turn ");
+        if (!immunity[i] && !skipTurn[i]) printf("Normal");
+        printf("\n");
+    }
+    printf("\n");
 }
 
 void displayBoard(int positions[], char names[][50], int numPlayers) {
@@ -171,6 +184,7 @@ int main() {
             int dice = rollDice();
             rolls[currentPlayer]++;
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
+            Sleep(500); // 0.5 second delay
             int newPosition = positions[currentPlayer] + dice;
             if (newPosition > 100) {
                 int bounceBack = newPosition - 100;
@@ -204,6 +218,7 @@ int main() {
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
+            displayPlayerStatus(immunity, skipTurn, names, numPlayers);
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
