@@ -76,27 +76,29 @@ void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
 }
 
 int rollDice() {
-    return (rand() % 6) + 1;
+    int dice = (rand() % 6) + 1;
+    printf("\a"); // beep for dice roll
+    return dice;
 }
 
 int checkSnakesAndLadders(int position) {
-    if (position == 4) { printf("Ladder! 4 -> 14\n"); return 14; }
-    if (position == 9) { printf("Ladder! 9 -> 31\n"); return 31; }
-    if (position == 17) { printf("Snake! 17 -> 7\n"); return 7; }
-    if (position == 21) { printf("Ladder! 21 -> 42\n"); return 42; }
-    if (position == 28) { printf("Snake! 28 -> 12\n"); return 12; }
-    if (position == 54) { printf("Snake! 54 -> 34\n"); return 34; }
-    if (position == 63) { printf("Ladder! 63 -> 81\n"); return 81; }
-    if (position == 87) { printf("Snake! 87 -> 36\n"); return 36; }
-    if (position == 95) { printf("Snake! 95 -> 73\n"); return 73; }
-    if (position == 99) { printf("Snake! 99 -> 5\n"); return 5; }
+    if (position == 4) { printf("\aLadder! 4 -> 14\n"); return 14; }
+    if (position == 9) { printf("\aLadder! 9 -> 31\n"); return 31; }
+    if (position == 17) { printf("\aSnake! 17 -> 7\n"); return 7; }
+    if (position == 21) { printf("\aLadder! 21 -> 42\n"); return 42; }
+    if (position == 28) { printf("\aSnake! 28 -> 12\n"); return 12; }
+    if (position == 54) { printf("\aSnake! 54 -> 34\n"); return 34; }
+    if (position == 63) { printf("\aLadder! 63 -> 81\n"); return 81; }
+    if (position == 87) { printf("\aSnake! 87 -> 36\n"); return 36; }
+    if (position == 95) { printf("\aSnake! 95 -> 73\n"); return 73; }
+    if (position == 99) { printf("\aSnake! 99 -> 5\n"); return 5; }
     return position;
 }
 
 int checkSpecialSquare(int position) {
-    if (position == 23) { printf("Trap! 23 causes you to skip the next turn.\n"); return 1; }
-    if (position == 46) { printf("Trap! 46 causes you to skip the next turn.\n"); return 1; }
-    if (position == 72) { printf("Trap! 72 causes you to skip the next turn.\n"); return 1; }
+    if (position == 23) { printf("\aTrap! 23 causes you to skip the next turn.\n"); return 1; }
+    if (position == 46) { printf("\aTrap! 46 causes you to skip the next turn.\n"); return 1; }
+    if (position == 72) { printf("\aTrap! 72 causes you to skip the next turn.\n"); return 1; }
     return 0;
 }
 
@@ -104,6 +106,7 @@ int checkPowerUp(int position, PowerUp powerUps[], int currentPlayer, int skipTu
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
         if (powerUps[pu].active && powerUps[pu].position == position) {
             powerUps[pu].active = 0; // deactivate
+            printf("\a"); // beep for power-up
             if (powerUps[pu].type == 0) {
                 printf("Power-up! %s gets an extra turn!\n", names[currentPlayer]);
                 return 1; // extra turn
@@ -218,7 +221,7 @@ int main() {
             turns++;
         }
 
-        printf("\n%s Wins!\n", names[winner]);
+        printf("\n\a%s Wins!\n", names[winner]);
         wins[winner]++;
         printf("Game completed in %d turns.\n", turns);
         printf("Rolls taken by each player:\n");
