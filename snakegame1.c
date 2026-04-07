@@ -17,6 +17,18 @@ void showWelcome() {
     printf("===== Snake and Ladder Game with Power-ups =====\n");
 }
 
+void showRules() {
+    printf("\nRules:\n");
+    printf("- Roll dice to move 1-6 spaces\n");
+    printf("- Land on ladders to climb up, snakes to slide down\n");
+    printf("- Traps skip your next turn\n");
+    printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, or immunity\n");
+    printf("- Land on another player to bump them back to start\n");
+    printf("- First to reach 100 wins!\n");
+    printf("- Roll 6 for extra turn\n");
+    printf("- Overshoot 100 bounces back\n\n");
+}
+
 void initializePowerUps(PowerUp powerUps[]) {
     for (int i = 0; i < NUM_POWERUPS; i++) {
         powerUps[i].position = (rand() % 99) + 1; // 1-99
@@ -150,6 +162,7 @@ int main() {
     char playAgain;
 
     showWelcome();
+    showRules();
 
     do {
         printf("Enter number of players (2-4): ");
