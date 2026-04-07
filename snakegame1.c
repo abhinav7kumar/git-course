@@ -25,8 +25,13 @@ void initializePowerUps(PowerUp powerUps[]) {
     }
 }
 
-void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers) {
-    printf("\nPlayer Status:\n");
+void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers, PowerUp powerUps[], int turns) {
+    printf("\nPlayer Status (Turn %d):\n", turns + 1);
+    int activePowerUps = 0;
+    for (int pu = 0; pu < NUM_POWERUPS; pu++) {
+        if (powerUps[pu].active) activePowerUps++;
+    }
+    printf("Active Power-ups remaining: %d\n", activePowerUps);
     for (int i = 0; i < numPlayers; i++) {
         printf("%s: ", names[i]);
         if (immunity[i]) printf("Immune ");
@@ -218,7 +223,7 @@ int main() {
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
-            displayPlayerStatus(immunity, skipTurn, names, numPlayers);
+            displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, turns);
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
