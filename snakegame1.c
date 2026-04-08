@@ -57,7 +57,7 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
 void displayBoard(int positions[], char names[][50], int numPlayers) {
     printf("\nCurrent Board:\n");
     for (int i = 0; i < numPlayers; i++) {
-        printf("%s: %d\n", names[i], positions[i]);
+        printf("%s: %d (spaces left: %d)\n", names[i], positions[i], 100 - positions[i]);
     }
     printf("Goal: 100\n\n");
 }
