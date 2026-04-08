@@ -22,7 +22,7 @@ void showRules() {
     printf("- Roll dice to move 1-6 spaces\n");
     printf("- Land on ladders to climb up, snakes to slide down\n");
     printf("- Traps skip your next turn\n");
-    printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, or immunity\n");
+    printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
     printf("- Roll 6 for extra turn\n");
@@ -32,7 +32,7 @@ void showRules() {
 void initializePowerUps(PowerUp powerUps[]) {
     for (int i = 0; i < NUM_POWERUPS; i++) {
         powerUps[i].position = (rand() % 99) + 1; // 1-99
-        powerUps[i].type = rand() % 3; // 0,1,2
+        powerUps[i].type = rand() % 4; // 0,1,2,3
         powerUps[i].active = 1;
     }
 }
@@ -153,9 +153,9 @@ int checkSpecialSquare(int position) {
     return 0;
 }
 
-int checkPowerUp(int position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50]) {
+int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50]) {
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
-        if (powerUps[pu].active && powerUps[pu].position == position) {
+        if (powerUps[pu].active && powerUps[pu].position == *position) {
             powerUps[pu].active = 0; // deactivate
             printf("\a"); // beep for power-up
             if (powerUps[pu].type == 0) {
@@ -168,6 +168,10 @@ int checkPowerUp(int position, PowerUp powerUps[], int currentPlayer, int skipTu
             } else if (powerUps[pu].type == 2) {
                 printf("Power-up! %s is now immune to traps!\n", names[currentPlayer]);
                 return 2; // immunity
+            } else if (powerUps[pu].type == 3) {
+                int newPos = (rand() % 99) + 1;
+                *position = newPos;
+                printf("Power-up! %s teleports to position %d!\n", names[currentPlayer], newPos);
             }
             break;
         }
@@ -234,7 +238,7 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
-            int powerUpEffect = checkPowerUp(positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names);
+            int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names);
             int trapHit = checkSpecialSquare(positions[currentPlayer]);
             if (trapHit) {
                 if (immunity[currentPlayer]) {
