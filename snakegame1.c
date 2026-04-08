@@ -208,6 +208,7 @@ int main() {
         time_t startTime = time(NULL); // Record start time
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
+        int totalSpaces[MAX_PLAYERS] = {0}; // Track total spaces moved
         int skipTurn[MAX_PLAYERS] = {0};
         int immunity[MAX_PLAYERS] = {0};
         PowerUp powerUps[NUM_POWERUPS];
@@ -227,6 +228,7 @@ int main() {
 
             int dice = rollDice();
             rolls[currentPlayer]++;
+            totalSpaces[currentPlayer] += dice; // Track total spaces moved
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
             Sleep(500); // 0.5 second delay
             int newPosition = positions[currentPlayer] + dice;
@@ -288,6 +290,10 @@ int main() {
         printf("Rolls taken by each player:\n");
         for (int i = 0; i < numPlayers; i++) {
             printf("%s: %d rolls\n", names[i], rolls[i]);
+        }
+        printf("Total spaces moved by each player:\n");
+        for (int i = 0; i < numPlayers; i++) {
+            printf("%s: %d spaces\n", names[i], totalSpaces[i]);
         }
 
         printf("Play again? (y/n): ");
