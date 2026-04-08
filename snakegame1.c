@@ -180,6 +180,7 @@ int main() {
     }
 
     do {
+        time_t startTime = time(NULL); // Record start time
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
         int skipTurn[MAX_PLAYERS] = {0};
@@ -256,7 +257,9 @@ int main() {
 
         printf("\n\a%s Wins!\n", names[winner]);
         wins[winner]++;
-        printf("Game completed in %d turns.\n", turns);
+        time_t endTime = time(NULL); // Record end time
+        double gameDuration = difftime(endTime, startTime); // Calculate duration in seconds
+        printf("Game completed in %d turns and %.0f seconds.\n", turns, gameDuration);
         printf("Rolls taken by each player:\n");
         for (int i = 0; i < numPlayers; i++) {
             printf("%s: %d rolls\n", names[i], rolls[i]);
