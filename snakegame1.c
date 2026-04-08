@@ -189,19 +189,45 @@ int main() {
     showWelcome();
     showRules();
 
+    int choice;
     do {
-        printf("Enter number of players (2-4): ");
-        scanf("%d", &numPlayers);
-        if (numPlayers < 2 || numPlayers > 4) {
-            printf("Invalid number. Must be 2-4.\n");
-            continue;
-        }
-        break;
+        printf("1. New Game\n2. Load Game\nChoose: ");
+        scanf("%d", &choice);
+        if (choice == 1 || choice == 2) break;
+        printf("Invalid choice.\n");
     } while (1);
 
-    for (int i = 0; i < numPlayers; i++) {
-        printf("Enter Player %d name: ", i + 1);
-        scanf("%s", names[i]);
+    if (choice == 2) {
+        FILE *file = fopen("savegame.txt", "r");
+        if (file == NULL) {
+            printf("No save file found. Starting new game.\n");
+            choice = 1;
+        } else {
+            fscanf(file, "%d", &numPlayers);
+            for (int i = 0; i < numPlayers; i++) {
+                fscanf(file, "%s", names[i]);
+                fscanf(file, "%d", &wins[i]);
+            }
+            fclose(file);
+            printf("Loaded previous game data.\n");
+        }
+    }
+
+    if (choice == 1) {
+        do {
+            printf("Enter number of players (2-4): ");
+            scanf("%d", &numPlayers);
+            if (numPlayers < 2 || numPlayers > 4) {
+                printf("Invalid number. Must be 2-4.\n");
+                continue;
+            }
+            break;
+        } while (1);
+
+        for (int i = 0; i < numPlayers; i++) {
+            printf("Enter Player %d name: ", i + 1);
+            scanf("%s", names[i]);
+        }
     }
 
     do {
@@ -304,6 +330,18 @@ int main() {
     printf("\nFinal Scores:\n");
     for (int i = 0; i < numPlayers; i++) {
         printf("%s: %d wins\n", names[i], wins[i]);
+    }
+
+    if (choice == 1) {
+        FILE *file = fopen("savegame.txt", "w");
+        if (file) {
+            fprintf(file, "%d\n", numPlayers);
+            for (int i = 0; i < numPlayers; i++) {
+                fprintf(file, "%s\n%d\n", names[i], wins[i]);
+            }
+            fclose(file);
+            printf("Game data saved.\n");
+        }
     }
 
     return 0;
