@@ -74,6 +74,9 @@ void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
             }
             int playerOnSquare = -1;
             int hasPowerUp = 0;
+            int isLadder = 0;
+            int isSnake = 0;
+            int isTrap = 0;
             for (int p = 0; p < numPlayers; p++) {
                 if (positions[p] == pos) {
                     if (playerOnSquare == -1) {
@@ -90,19 +93,37 @@ void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
                     break;
                 }
             }
+            // Check for ladders
+            if (pos == 4 || pos == 9 || pos == 21 || pos == 63) {
+                isLadder = 1;
+            }
+            // Check for snakes
+            if (pos == 17 || pos == 28 || pos == 54 || pos == 87 || pos == 95 || pos == 99) {
+                isSnake = 1;
+            }
+            // Check for traps
+            if (pos == 23 || pos == 46 || pos == 72) {
+                isTrap = 1;
+            }
             if (playerOnSquare == 0) {
                 printf("[M] ");
             } else if (playerOnSquare > 0) {
                 printf("[%d] ", playerOnSquare);
             } else if (hasPowerUp) {
                 printf("[P] ");
+            } else if (isTrap) {
+                printf("[T] ");
+            } else if (isSnake) {
+                printf("[S] ");
+            } else if (isLadder) {
+                printf("[L] ");
             } else {
                 printf("[%2d] ", pos);
             }
         }
         printf("\n");
     }
-    printf("\n");
+    printf("\nLegend: [P] Power-up, [T] Trap, [S] Snake, [L] Ladder, [1-4] Players, [M] Multiple players\n\n");
 }
 
 int rollDice() {
