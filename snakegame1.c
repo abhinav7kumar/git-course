@@ -23,10 +23,21 @@ void showRules() {
     printf("- Land on ladders to climb up, snakes to slide down\n");
     printf("- Traps skip your next turn\n");
     printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
+    printf("- Active power-up locations and types are shown each turn\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
     printf("- Roll 6 for extra turn\n");
     printf("- Overshoot 100 bounces back\n\n");
+}
+
+const char* getPowerUpName(int type) {
+    switch (type) {
+        case 0: return "Extra Turn";
+        case 1: return "Skip Opponent";
+        case 2: return "Immunity";
+        case 3: return "Teleport";
+        default: return "Unknown";
+    }
 }
 
 void initializePowerUps(PowerUp powerUps[]) {
@@ -43,8 +54,16 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
         if (powerUps[pu].active) activePowerUps++;
     }
-    printf("Active Power-ups remaining: %d\n", activePowerUps);
-    for (int i = 0; i < numPlayers; i++) {
+    printf("Active Power-ups remaining: %d\n", activePowerUps);    if (activePowerUps > 0) {
+        printf("Power-up details:\n");
+        for (int pu = 0; pu < NUM_POWERUPS; pu++) {
+            if (powerUps[pu].active) {
+                printf("  - %s at %d\n", getPowerUpName(powerUps[pu].type), powerUps[pu].position);
+            }
+        }
+    } else {
+        printf("Power-up details: None\n");
+    }    for (int i = 0; i < numPlayers; i++) {
         printf("%s: ", names[i]);
         if (immunity[i]) printf("Immune ");
         if (skipTurn[i]) printf("Skipping next turn ");
