@@ -24,6 +24,7 @@ void showRules() {
     printf("- Traps skip your next turn\n");
     printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
     printf("- Active power-up locations and types are shown each turn\n");
+    printf("- Last rolls are displayed for every player\n");
     printf("- A leaderboard shows current player rankings each turn\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
@@ -101,6 +102,14 @@ void displayLeaderboard(int positions[], char names[][50], int numPlayers) {
     printf("Leaderboard:\n");
     for (int i = 0; i < numPlayers; i++) {
         printf("  %d. %s (%d)\n", i + 1, names[order[i]], positions[order[i]]);
+    }
+    printf("\n");
+}
+
+void displayLastRolls(int lastRolls[], char names[][50], int numPlayers) {
+    printf("Last Rolls:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("  %s: %d\n", names[i], lastRolls[i]);
     }
     printf("\n");
 }
@@ -278,6 +287,7 @@ int main() {
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
         int totalSpaces[MAX_PLAYERS] = {0}; // Track total spaces moved
+        int lastRoll[MAX_PLAYERS] = {0};
         int skipTurn[MAX_PLAYERS] = {0};
         int immunity[MAX_PLAYERS] = {0};
         PowerUp powerUps[NUM_POWERUPS];
@@ -297,6 +307,7 @@ int main() {
 
             int dice = rollDice();
             rolls[currentPlayer]++;
+            lastRoll[currentPlayer] = dice;
             totalSpaces[currentPlayer] += dice; // Track total spaces moved
             printf("\n%s rolled: %d\n", names[currentPlayer], dice);
             Sleep(500); // 0.5 second delay
@@ -332,6 +343,7 @@ int main() {
 
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
+            displayLastRolls(lastRoll, names, numPlayers);
             displayLeaderboard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
             displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, turns);
