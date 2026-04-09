@@ -25,6 +25,7 @@ void showRules() {
     printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
     printf("- Active power-up locations and types are shown each turn\n");
     printf("- Last rolls are displayed for every player\n");
+    printf("- The next player is previewed after each move\n");
     printf("- A leaderboard shows current player rankings each turn\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
@@ -112,6 +113,15 @@ void displayLastRolls(int lastRolls[], char names[][50], int numPlayers) {
         printf("  %s: %d\n", names[i], lastRolls[i]);
     }
     printf("\n");
+}
+
+void displayNextPlayer(int currentPlayer, char names[][50], int numPlayers, int extraTurn) {
+    int nextPlayer = extraTurn ? currentPlayer : (currentPlayer + 1) % numPlayers;
+    if (extraTurn) {
+        printf("Next turn: %s (extra turn)\n\n", names[nextPlayer]);
+    } else {
+        printf("Next turn: %s\n\n", names[nextPlayer]);
+    }
 }
 
 void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
@@ -361,6 +371,7 @@ int main() {
             } else {
                 currentPlayer = (currentPlayer + 1) % numPlayers;
             }
+            displayNextPlayer(currentPlayer, names, numPlayers, extraTurn);
             turns++;
         }
 
