@@ -26,6 +26,7 @@ void showRules() {
     printf("- Active power-up locations and types are shown each turn\n");
     printf("- Last rolls are displayed for every player\n");
     printf("- The next player is previewed after each move\n");
+    printf("- Player progress percentage is shown on the board\n");
     printf("- A leaderboard shows current player rankings each turn\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
@@ -81,7 +82,8 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
 void displayBoard(int positions[], char names[][50], int numPlayers) {
     printf("\nCurrent Board:\n");
     for (int i = 0; i < numPlayers; i++) {
-        printf("%s: %d (spaces left: %d)\n", names[i], positions[i], 100 - positions[i]);
+        int progress = (positions[i] * 100) / 100;
+        printf("%s: %d (spaces left: %d, progress: %d%%)\n", names[i], positions[i], 100 - positions[i], progress);
     }
     printf("Goal: 100\n\n");
 }
