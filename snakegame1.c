@@ -24,6 +24,7 @@ void showRules() {
     printf("- Traps skip your next turn\n");
     printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
     printf("- Active power-up locations and types are shown each turn\n");
+    printf("- A leaderboard shows current player rankings each turn\n");
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
     printf("- Roll 6 for extra turn\n");
@@ -54,7 +55,8 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
         if (powerUps[pu].active) activePowerUps++;
     }
-    printf("Active Power-ups remaining: %d\n", activePowerUps);    if (activePowerUps > 0) {
+    printf("Active Power-ups remaining: %d\n", activePowerUps);
+    if (activePowerUps > 0) {
         printf("Power-up details:\n");
         for (int pu = 0; pu < NUM_POWERUPS; pu++) {
             if (powerUps[pu].active) {
@@ -63,7 +65,8 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
         }
     } else {
         printf("Power-up details: None\n");
-    }    for (int i = 0; i < numPlayers; i++) {
+    }
+    for (int i = 0; i < numPlayers; i++) {
         printf("%s: ", names[i]);
         if (immunity[i]) printf("Immune ");
         if (skipTurn[i]) printf("Skipping next turn ");
@@ -79,6 +82,27 @@ void displayBoard(int positions[], char names[][50], int numPlayers) {
         printf("%s: %d (spaces left: %d)\n", names[i], positions[i], 100 - positions[i]);
     }
     printf("Goal: 100\n\n");
+}
+
+void displayLeaderboard(int positions[], char names[][50], int numPlayers) {
+    int order[MAX_PLAYERS];
+    for (int i = 0; i < numPlayers; i++) {
+        order[i] = i;
+    }
+    for (int i = 0; i < numPlayers - 1; i++) {
+        for (int j = 0; j < numPlayers - 1 - i; j++) {
+            if (positions[order[j]] < positions[order[j + 1]]) {
+                int tmp = order[j];
+                order[j] = order[j + 1];
+                order[j + 1] = tmp;
+            }
+        }
+    }
+    printf("Leaderboard:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("  %d. %s (%d)\n", i + 1, names[order[i]], positions[order[i]]);
+    }
+    printf("\n");
 }
 
 void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
@@ -308,6 +332,7 @@ int main() {
 
             printf("%s position: %d\n", names[currentPlayer], positions[currentPlayer]);
             displayBoard(positions, names, numPlayers);
+            displayLeaderboard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
             displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, turns);
 
