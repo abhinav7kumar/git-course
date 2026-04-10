@@ -419,6 +419,10 @@ int main() {
         for (int i = 0; i < numPlayers; i++) {
             printf("%s: %d spaces\n", names[i], totalSpaces[i]);
         }
+        printf("Power-ups collected by each player:\n");
+        for (int i = 0; i < numPlayers; i++) {
+            printf("%s: %d\n", names[i], powerUpsCollected[i]);
+        }
 
         printf("Play again? (y/n): ");
         scanf(" %c", &playAgain);
