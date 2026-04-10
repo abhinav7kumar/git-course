@@ -64,7 +64,7 @@ void initializePowerUps(PowerUp powerUps[]) {
     }
 }
 
-void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers, PowerUp powerUps[], int turns) {
+void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers, PowerUp powerUps[], int powerUpsCollected[], int turns) {
     printf("\nPlayer Status (Turn %d):\n", turns + 1);
     int activePowerUps = 0;
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
@@ -81,6 +81,10 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
         }
     } else {
         printf("Power-up details: None\n");
+    }
+    printf("Power-ups collected so far:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("  %s: %d\n", names[i], powerUpsCollected[i]);
     }
     for (int i = 0; i < numPlayers; i++) {
         printf("%s: ", names[i]);
@@ -239,10 +243,11 @@ int checkSpecialSquare(int position) {
     return 0;
 }
 
-int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50]) {
+int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50], int *powerUpsCollected) {
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
         if (powerUps[pu].active && powerUps[pu].position == *position) {
             powerUps[pu].active = 0; // deactivate
+            (*powerUpsCollected)++;
             printf("\a"); // beep for power-up
             if (powerUps[pu].type == 0) {
                 printf("Power-up! %s gets an extra turn!\n", names[currentPlayer]);
@@ -324,6 +329,7 @@ int main() {
         int lastRoll[MAX_PLAYERS] = {0};
         int skipTurn[MAX_PLAYERS] = {0};
         int immunity[MAX_PLAYERS] = {0};
+        int powerUpsCollected[MAX_PLAYERS] = {0};
         PowerUp powerUps[NUM_POWERUPS];
         initializePowerUps(powerUps);
         int currentPlayer = 0;
@@ -339,6 +345,7 @@ int main() {
                 continue;
             }
 
+            waitForPlayerRoll(names[currentPlayer]);
             int dice = rollDice();
             rolls[currentPlayer]++;
             lastRoll[currentPlayer] = dice;
@@ -354,7 +361,7 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
-            int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names);
+            int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names, &powerUpsCollected[currentPlayer]);
             int trapHit = checkSpecialSquare(positions[currentPlayer]);
             if (trapHit) {
                 if (immunity[currentPlayer]) {
@@ -380,7 +387,7 @@ int main() {
             displayLastRolls(lastRoll, names, numPlayers);
             displayLeaderboard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
-            displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, turns);
+            displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, powerUpsCollected, turns);
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
