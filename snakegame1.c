@@ -64,7 +64,7 @@ void initializePowerUps(PowerUp powerUps[]) {
     }
 }
 
-void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers, PowerUp powerUps[], int powerUpsCollected[], int turns) {
+void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int numPlayers, PowerUp powerUps[], int powerUpsCollected[], int trapsHit[], int turns) {
     printf("\nPlayer Status (Turn %d):\n", turns + 1);
     int activePowerUps = 0;
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
@@ -85,6 +85,10 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
     printf("Power-ups collected so far:\n");
     for (int i = 0; i < numPlayers; i++) {
         printf("  %s: %d\n", names[i], powerUpsCollected[i]);
+    }
+    printf("Trap squares landed on:\n");
+    for (int i = 0; i < numPlayers; i++) {
+        printf("  %s: %d\n", names[i], trapsHit[i]);
     }
     for (int i = 0; i < numPlayers; i++) {
         printf("%s: ", names[i]);
@@ -330,6 +334,7 @@ int main() {
         int skipTurn[MAX_PLAYERS] = {0};
         int immunity[MAX_PLAYERS] = {0};
         int powerUpsCollected[MAX_PLAYERS] = {0};
+        int trapsHit[MAX_PLAYERS] = {0};
         PowerUp powerUps[NUM_POWERUPS];
         initializePowerUps(powerUps);
         int currentPlayer = 0;
@@ -364,6 +369,7 @@ int main() {
             int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names, &powerUpsCollected[currentPlayer]);
             int trapHit = checkSpecialSquare(positions[currentPlayer]);
             if (trapHit) {
+                trapsHit[currentPlayer]++;
                 if (immunity[currentPlayer]) {
                     printf("Immunity used! %s avoids the trap.\n", names[currentPlayer]);
                     immunity[currentPlayer] = 0;
@@ -387,7 +393,7 @@ int main() {
             displayLastRolls(lastRoll, names, numPlayers);
             displayLeaderboard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
-            displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, powerUpsCollected, turns);
+            displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, powerUpsCollected, trapsHit, turns);
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
@@ -422,6 +428,10 @@ int main() {
         printf("Power-ups collected by each player:\n");
         for (int i = 0; i < numPlayers; i++) {
             printf("%s: %d\n", names[i], powerUpsCollected[i]);
+        }
+        printf("Trap squares landed on by each player:\n");
+        for (int i = 0; i < numPlayers; i++) {
+            printf("%s: %d\n", names[i], trapsHit[i]);
         }
 
         printf("Play again? (y/n): ");
