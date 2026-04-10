@@ -44,6 +44,17 @@ const char* getPowerUpName(int type) {
     }
 }
 
+void displayPowerUpSummary(PowerUp powerUps[]) {
+    int counts[4] = {0};
+    for (int i = 0; i < NUM_POWERUPS; i++) {
+        if (powerUps[i].active && powerUps[i].type >= 0 && powerUps[i].type < 4) {
+            counts[powerUps[i].type]++;
+        }
+    }
+    printf("Power-up summary: Extra Turn=%d, Skip Opponent=%d, Immunity=%d, Teleport=%d\n",
+           counts[0], counts[1], counts[2], counts[3]);
+}
+
 void initializePowerUps(PowerUp powerUps[]) {
     for (int i = 0; i < NUM_POWERUPS; i++) {
         powerUps[i].position = (rand() % 99) + 1; // 1-99
@@ -60,6 +71,7 @@ void displayPlayerStatus(int immunity[], int skipTurn[], char names[][50], int n
     }
     printf("Active Power-ups remaining: %d\n", activePowerUps);
     if (activePowerUps > 0) {
+        displayPowerUpSummary(powerUps);
         printf("Power-up details:\n");
         for (int pu = 0; pu < NUM_POWERUPS; pu++) {
             if (powerUps[pu].active) {
