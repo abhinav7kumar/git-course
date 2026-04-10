@@ -31,7 +31,8 @@ void showRules() {
     printf("- Land on another player to bump them back to start\n");
     printf("- First to reach 100 wins!\n");
     printf("- Roll 6 for extra turn\n");
-    printf("- Overshoot 100 bounces back\n\n");
+    printf("- Overshoot 100 bounces back\n");
+    printf("- Press Enter before each dice roll\n\n");
 }
 
 const char* getPowerUpName(int type) {
@@ -98,6 +99,15 @@ void displayBoard(int positions[], char names[][50], int numPlayers) {
         printf("%s: %d (spaces left: %d, progress: %d%%)\n", names[i], positions[i], 100 - positions[i], progress);
     }
     printf("Goal: 100\n\n");
+}
+
+void waitForPlayerRoll(const char *playerName) {
+    printf("%s, press Enter to roll the dice...", playerName);
+    fflush(stdin);
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+        ;
+    }
 }
 
 void displayLeaderboard(int positions[], char names[][50], int numPlayers) {
