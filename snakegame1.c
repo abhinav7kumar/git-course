@@ -408,6 +408,7 @@ int main() {
             displayLeaderboard(positions, names, numPlayers);
             displayVisualBoard(positions, numPlayers, powerUps);
             displayPlayerStatus(immunity, skipTurn, names, numPlayers, powerUps, powerUpsCollected, trapsHit, turns);
+            printf("Time elapsed: %.0f seconds\n\n", difftime(time(NULL), startTime));
 
             if (positions[currentPlayer] == 100) {
                 winner = currentPlayer;
