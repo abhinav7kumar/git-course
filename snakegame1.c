@@ -22,7 +22,7 @@ void showRules() {
     printf("- Roll dice to move 1-6 spaces\n");
     printf("- Land on ladders to climb up, snakes to slide down\n");
     printf("- Traps skip your next turn\n");
-    printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, or teleport\n");
+    printf("- Land on power-ups [P] for bonuses: extra turn, skip opponent, immunity, teleport, or double roll\n");
     printf("- Active power-up locations and types are shown each turn\n");
     printf("- Last rolls are displayed for every player\n");
     printf("- The next player is previewed after each move\n");
@@ -41,25 +41,26 @@ const char* getPowerUpName(int type) {
         case 1: return "Skip Opponent";
         case 2: return "Immunity";
         case 3: return "Teleport";
+        case 4: return "Double Roll";
         default: return "Unknown";
     }
 }
 
 void displayPowerUpSummary(PowerUp powerUps[]) {
-    int counts[4] = {0};
+    int counts[5] = {0};
     for (int i = 0; i < NUM_POWERUPS; i++) {
-        if (powerUps[i].active && powerUps[i].type >= 0 && powerUps[i].type < 4) {
+        if (powerUps[i].active && powerUps[i].type >= 0 && powerUps[i].type < 5) {
             counts[powerUps[i].type]++;
         }
     }
-    printf("Power-up summary: Extra Turn=%d, Skip Opponent=%d, Immunity=%d, Teleport=%d\n",
-           counts[0], counts[1], counts[2], counts[3]);
+    printf("Power-up summary: Extra Turn=%d, Skip Opponent=%d, Immunity=%d, Teleport=%d, Double Roll=%d\n",
+           counts[0], counts[1], counts[2], counts[3], counts[4]);
 }
 
 void initializePowerUps(PowerUp powerUps[]) {
     for (int i = 0; i < NUM_POWERUPS; i++) {
         powerUps[i].position = (rand() % 99) + 1; // 1-99
-        powerUps[i].type = rand() % 4; // 0,1,2,3
+        powerUps[i].type = rand() % 5; // 0,1,2,3,4
         powerUps[i].active = 1;
     }
 }
@@ -247,7 +248,7 @@ int checkSpecialSquare(int position) {
     return 0;
 }
 
-int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50], int *powerUpsCollected) {
+int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipTurn[], int numPlayers, char names[][50], int *powerUpsCollected, int doubleRoll[]) {
     for (int pu = 0; pu < NUM_POWERUPS; pu++) {
         if (powerUps[pu].active && powerUps[pu].position == *position) {
             powerUps[pu].active = 0; // deactivate
@@ -267,6 +268,9 @@ int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipT
                 int newPos = (rand() % 99) + 1;
                 *position = newPos;
                 printf("Power-up! %s teleports to position %d!\n", names[currentPlayer], newPos);
+            } else if (powerUps[pu].type == 4) {
+                doubleRoll[currentPlayer] = 1;
+                printf("Power-up! %s gets a double roll!\n", names[currentPlayer]);
             }
             break;
         }
@@ -335,6 +339,7 @@ int main() {
         int immunity[MAX_PLAYERS] = {0};
         int powerUpsCollected[MAX_PLAYERS] = {0};
         int trapsHit[MAX_PLAYERS] = {0};
+        int doubleRoll[MAX_PLAYERS] = {0};
         PowerUp powerUps[NUM_POWERUPS];
         initializePowerUps(powerUps);
         int currentPlayer = 0;
@@ -353,9 +358,18 @@ int main() {
             waitForPlayerRoll(names[currentPlayer]);
             int dice = rollDice();
             rolls[currentPlayer]++;
+            if (doubleRoll[currentPlayer]) {
+                printf("\n%s rolled: %d (first roll)\n", names[currentPlayer], dice);
+                int dice2 = rollDice();
+                dice += dice2;
+                printf("%s rolled: %d (second roll, total: %d)\n", names[currentPlayer], dice2, dice);
+                doubleRoll[currentPlayer] = 0;
+                rolls[currentPlayer]++; // count as two rolls
+            } else {
+                printf("\n%s rolled: %d\n", names[currentPlayer], dice);
+            }
             lastRoll[currentPlayer] = dice;
             totalSpaces[currentPlayer] += dice; // Track total spaces moved
-            printf("\n%s rolled: %d\n", names[currentPlayer], dice);
             Sleep(500); // 0.5 second delay
             int newPosition = positions[currentPlayer] + dice;
             if (newPosition > 100) {
@@ -366,7 +380,7 @@ int main() {
                 positions[currentPlayer] = newPosition;
             }
             positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
-            int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names, &powerUpsCollected[currentPlayer]);
+            int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names, &powerUpsCollected[currentPlayer], doubleRoll);
             int trapHit = checkSpecialSquare(positions[currentPlayer]);
             if (trapHit) {
                 trapsHit[currentPlayer]++;
