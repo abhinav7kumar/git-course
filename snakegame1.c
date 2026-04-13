@@ -7,6 +7,11 @@
 #define BOARD_SIZE 100
 #define NUM_POWERUPS 5
 
+// Difficulty levels
+#define EASY 0
+#define MEDIUM 1
+#define HARD 2
+
 typedef struct {
     int position;
     int type; // 0: extra turn, 1: skip opponent, 2: immunity
@@ -33,6 +38,23 @@ void showRules() {
     printf("- Roll 6 for extra turn\n");
     printf("- Overshoot 100 bounces back\n");
     printf("- Press Enter before each dice roll\n\n");
+}
+
+int selectDifficulty() {
+    int difficulty;
+    printf("\n===== Select Difficulty Level =====\n");
+    printf("1. Easy (More ladders, fewer snakes and traps)\n");
+    printf("2. Medium (Balanced)\n");
+    printf("3. Hard (More snakes and traps, fewer ladders)\n");
+    printf("Choose difficulty (1-3): ");
+    
+    do {
+        scanf("%d", &difficulty);
+        if (difficulty >= 1 && difficulty <= 3) {
+            return difficulty - 1; // Convert to EASY(0), MEDIUM(1), HARD(2)
+        }
+        printf("Invalid choice. Please enter 1, 2, or 3: ");
+    } while (1);
 }
 
 const char* getPowerUpName(int type) {
@@ -157,7 +179,7 @@ void displayNextPlayer(int currentPlayer, char names[][50], int numPlayers, int 
     }
 }
 
-void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
+void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[], int difficulty) {
     printf("\nVisual Board:\n");
     for (int row = 10; row >= 1; row--) {
         for (int col = 1; col <= 10; col++) {
@@ -188,18 +210,52 @@ void displayVisualBoard(int positions[], int numPlayers, PowerUp powerUps[]) {
                     break;
                 }
             }
-            // Check for ladders
-            if (pos == 4 || pos == 9 || pos == 21 || pos == 63) {
-                isLadder = 1;
+            
+            // Check for ladders based on difficulty
+            if (difficulty == EASY) {
+                if (pos == 4 || pos == 9 || pos == 21 || pos == 63) {
+                    isLadder = 1;
+                }
+            } else if (difficulty == MEDIUM) {
+                if (pos == 4 || pos == 9 || pos == 21 || pos == 63) {
+                    isLadder = 1;
+                }
+            } else if (difficulty == HARD) {
+                if (pos == 4 || pos == 9 || pos == 21 || pos == 63) {
+                    isLadder = 1;
+                }
             }
-            // Check for snakes
-            if (pos == 17 || pos == 28 || pos == 54 || pos == 87 || pos == 95 || pos == 99) {
-                isSnake = 1;
+            
+            // Check for snakes based on difficulty
+            if (difficulty == EASY) {
+                if (pos == 17 || pos == 28) {
+                    isSnake = 1;
+                }
+            } else if (difficulty == MEDIUM) {
+                if (pos == 17 || pos == 28 || pos == 54 || pos == 87 || pos == 95 || pos == 99) {
+                    isSnake = 1;
+                }
+            } else if (difficulty == HARD) {
+                if (pos == 17 || pos == 28 || pos == 54 || pos == 73 || pos == 87 || pos == 95 || pos == 99 || pos == 50) {
+                    isSnake = 1;
+                }
             }
-            // Check for traps
-            if (pos == 23 || pos == 46 || pos == 72) {
-                isTrap = 1;
+            
+            // Check for traps based on difficulty
+            if (difficulty == EASY) {
+                if (pos == 23 || pos == 46) {
+                    isTrap = 1;
+                }
+            } else if (difficulty == MEDIUM) {
+                if (pos == 23 || pos == 46 || pos == 72) {
+                    isTrap = 1;
+                }
+            } else if (difficulty == HARD) {
+                if (pos == 23 || pos == 46 || pos == 72 || pos == 35 || pos == 60) {
+                    isTrap = 1;
+                }
             }
+            
             if (playerOnSquare == 0) {
                 printf("[M] ");
             } else if (playerOnSquare > 0) {
@@ -227,24 +283,69 @@ int rollDice() {
     return dice;
 }
 
-int checkSnakesAndLadders(int position) {
-    if (position == 4) { printf("\aLadder! 4 -> 14\n"); return 14; }
-    if (position == 9) { printf("\aLadder! 9 -> 31\n"); return 31; }
-    if (position == 17) { printf("\aSnake! 17 -> 7\n"); return 7; }
-    if (position == 21) { printf("\aLadder! 21 -> 42\n"); return 42; }
-    if (position == 28) { printf("\aSnake! 28 -> 12\n"); return 12; }
-    if (position == 54) { printf("\aSnake! 54 -> 34\n"); return 34; }
-    if (position == 63) { printf("\aLadder! 63 -> 81\n"); return 81; }
-    if (position == 87) { printf("\aSnake! 87 -> 36\n"); return 36; }
-    if (position == 95) { printf("\aSnake! 95 -> 73\n"); return 73; }
-    if (position == 99) { printf("\aSnake! 99 -> 5\n"); return 5; }
+int checkSnakesAndLadders(int position, int difficulty) {
+    // EASY: More ladders, fewer snakes
+    if (difficulty == EASY) {
+        if (position == 4) { printf("\aLadder! 4 -> 14\n"); return 14; }
+        if (position == 9) { printf("\aLadder! 9 -> 31\n"); return 31; }
+        if (position == 21) { printf("\aLadder! 21 -> 42\n"); return 42; }
+        if (position == 63) { printf("\aLadder! 63 -> 81\n"); return 81; }
+        if (position == 17) { printf("\aSnake! 17 -> 7\n"); return 7; }
+        if (position == 28) { printf("\aSnake! 28 -> 12\n"); return 12; }
+        // Fewer snakes in easy mode
+    }
+    // MEDIUM: Balanced (original setup)
+    else if (difficulty == MEDIUM) {
+        if (position == 4) { printf("\aLadder! 4 -> 14\n"); return 14; }
+        if (position == 9) { printf("\aLadder! 9 -> 31\n"); return 31; }
+        if (position == 17) { printf("\aSnake! 17 -> 7\n"); return 7; }
+        if (position == 21) { printf("\aLadder! 21 -> 42\n"); return 42; }
+        if (position == 28) { printf("\aSnake! 28 -> 12\n"); return 12; }
+        if (position == 54) { printf("\aSnake! 54 -> 34\n"); return 34; }
+        if (position == 63) { printf("\aLadder! 63 -> 81\n"); return 81; }
+        if (position == 87) { printf("\aSnake! 87 -> 36\n"); return 36; }
+        if (position == 95) { printf("\aSnake! 95 -> 73\n"); return 73; }
+        if (position == 99) { printf("\aSnake! 99 -> 5\n"); return 5; }
+    }
+    // HARD: More snakes, fewer ladders
+    else if (difficulty == HARD) {
+        if (position == 4) { printf("\aLadder! 4 -> 14\n"); return 14; }
+        if (position == 9) { printf("\aLadder! 9 -> 31\n"); return 31; }
+        if (position == 17) { printf("\aSnake! 17 -> 7\n"); return 7; }
+        if (position == 21) { printf("\aLadder! 21 -> 42\n"); return 42; }
+        if (position == 28) { printf("\aSnake! 28 -> 12\n"); return 12; }
+        if (position == 54) { printf("\aSnake! 54 -> 34\n"); return 34; }
+        if (position == 63) { printf("\aLadder! 63 -> 81\n"); return 81; }
+        if (position == 73) { printf("\aSnake! 73 -> 35\n"); return 35; }
+        if (position == 87) { printf("\aSnake! 87 -> 36\n"); return 36; }
+        if (position == 95) { printf("\aSnake! 95 -> 73\n"); return 73; }
+        if (position == 99) { printf("\aSnake! 99 -> 5\n"); return 5; }
+        if (position == 50) { printf("\aSnake! 50 -> 20\n"); return 20; }
+    }
     return position;
 }
 
-int checkSpecialSquare(int position) {
-    if (position == 23) { printf("\aTrap! 23 causes you to skip the next turn.\n"); return 1; }
-    if (position == 46) { printf("\aTrap! 46 causes you to skip the next turn.\n"); return 1; }
-    if (position == 72) { printf("\aTrap! 72 causes you to skip the next turn.\n"); return 1; }
+int checkSpecialSquare(int position, int difficulty) {
+    // EASY: Fewer traps
+    if (difficulty == EASY) {
+        if (position == 23) { printf("\aTrap! 23 causes you to skip the next turn.\n"); return 1; }
+        if (position == 46) { printf("\aTrap! 46 causes you to skip the next turn.\n"); return 1; }
+        // Fewer traps in easy mode
+    }
+    // MEDIUM: Balanced (original setup)
+    else if (difficulty == MEDIUM) {
+        if (position == 23) { printf("\aTrap! 23 causes you to skip the next turn.\n"); return 1; }
+        if (position == 46) { printf("\aTrap! 46 causes you to skip the next turn.\n"); return 1; }
+        if (position == 72) { printf("\aTrap! 72 causes you to skip the next turn.\n"); return 1; }
+    }
+    // HARD: More traps
+    else if (difficulty == HARD) {
+        if (position == 23) { printf("\aTrap! 23 causes you to skip the next turn.\n"); return 1; }
+        if (position == 46) { printf("\aTrap! 46 causes you to skip the next turn.\n"); return 1; }
+        if (position == 72) { printf("\aTrap! 72 causes you to skip the next turn.\n"); return 1; }
+        if (position == 35) { printf("\aTrap! 35 causes you to skip the next turn.\n"); return 1; }
+        if (position == 60) { printf("\aTrap! 60 causes you to skip the next turn.\n"); return 1; }
+    }
     return 0;
 }
 
@@ -287,6 +388,7 @@ int main() {
 
     showWelcome();
     showRules();
+    int difficulty = selectDifficulty();
 
     int choice;
     do {
@@ -331,6 +433,7 @@ int main() {
 
     do {
         time_t startTime = time(NULL); // Record start time
+        printf("Game started at: %s\n", ctime(&startTime));
         int positions[MAX_PLAYERS] = {0};
         int rolls[MAX_PLAYERS] = {0};
         int totalSpaces[MAX_PLAYERS] = {0}; // Track total spaces moved
