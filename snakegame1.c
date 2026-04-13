@@ -6,6 +6,9 @@
 #define MAX_PLAYERS 4
 #define BOARD_SIZE 100
 #define NUM_POWERUPS 5
+#define DIFFICULTY_EASY 0
+#define DIFFICULTY_MEDIUM 1
+#define DIFFICULTY_HARD 2
 
 // Difficulty levels
 #define EASY 0
@@ -38,6 +41,27 @@ void showRules() {
     printf("- Roll 6 for extra turn\n");
     printf("- Overshoot 100 bounces back\n");
     printf("- Press Enter before each dice roll\n\n");
+}
+
+void showDifficultyMenu() {
+    printf("\n===== SELECT DIFFICULTY =====\n");
+    printf("Easy: Fewer snakes and more ladders (beginner friendly)\n");
+    printf("Medium: Balanced snakes and ladders\n");
+    printf("Hard: More snakes and fewer ladders (challenging)\n");
+    printf("==========================\n\n");
+}
+
+int selectDifficulty() {
+    int choice;
+    showDifficultyMenu();
+    do {
+        printf("Select difficulty (1=Easy, 2=Medium, 3=Hard): ");
+        scanf("%d", &choice);
+        if (choice >= 1 && choice <= 3) {
+            return choice - 1; // Return 0, 1, or 2
+        }
+        printf("Invalid choice. Please enter 1, 2, or 3.\n");
+    } while (1);
 }
 
 int selectDifficulty() {
@@ -482,9 +506,11 @@ int main() {
             } else {
                 positions[currentPlayer] = newPosition;
             }
-            positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer]);
+            // Note: difficulty will be passed to these functions
+            // Now using the selected difficulty level
+            positions[currentPlayer] = checkSnakesAndLadders(positions[currentPlayer], difficulty);
             int powerUpEffect = checkPowerUp(&positions[currentPlayer], powerUps, currentPlayer, skipTurn, numPlayers, names, &powerUpsCollected[currentPlayer], doubleRoll);
-            int trapHit = checkSpecialSquare(positions[currentPlayer]);
+            int trapHit = checkSpecialSquare(positions[currentPlayer], difficulty);
             if (trapHit) {
                 trapsHit[currentPlayer]++;
                 if (immunity[currentPlayer]) {
