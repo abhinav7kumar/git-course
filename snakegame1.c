@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h> // for Sleep
+#include <string.h> // for strcpy
 
 #define MAX_PLAYERS 4
 #define BOARD_SIZE 100
@@ -20,6 +21,17 @@ typedef struct {
     int type; // 0: extra turn, 1: skip opponent, 2: immunity
     int active;
 } PowerUp;
+
+#define MAX_HALL_OF_FAME 10
+
+typedef struct {
+    char playerName[50];
+    int turns;
+    int difficulty;
+    time_t date;
+} HighScore;
+
+HighScore hallOfFame[MAX_HALL_OF_FAME];
 
 void showWelcome() {
     printf("===== Snake and Ladder Game with Power-ups =====\n");
@@ -51,6 +63,81 @@ void showDifficultyMenu() {
     printf("==========================\n\n");
 }
 
+void loadHallOfFame() {
+    FILE *file = fopen("halloffame.txt", "r");
+    if (file == NULL) {
+        for (int i = 0; i < MAX_HALL_OF_FAME; i++) {
+            strcpy(hallOfFame[i].playerName, "");
+            hallOfFame[i].turns = 999;
+            hallOfFame[i].difficulty = -1;
+            hallOfFame[i].date = 0;
+        }
+        return;
+    }
+    for (int i = 0; i < MAX_HALL_OF_FAME; i++) {
+        if (fscanf(file, "%49s %d %d %ld", hallOfFame[i].playerName, &hallOfFame[i].turns, &hallOfFame[i].difficulty, &hallOfFame[i].date) != 4) {
+            hallOfFame[i].turns = 999;
+        }
+    }
+    fclose(file);
+}
+
+void saveHallOfFame() {
+    FILE *file = fopen("halloffame.txt", "w");
+    if (file == NULL) return;
+    for (int i = 0; i < MAX_HALL_OF_FAME; i++) {
+        if (hallOfFame[i].turns != 999) {
+            fprintf(file, "%s %d %d %ld\n", hallOfFame[i].playerName, hallOfFame[i].turns, hallOfFame[i].difficulty, hallOfFame[i].date);
+        }
+    }
+    fclose(file);
+}
+
+void displayHallOfFame() {
+    printf("\n===== HALL OF FAME (Fastest Wins) =====\n");
+    int hasScores = 0;
+    for (int i = 0; i < MAX_HALL_OF_FAME; i++) {
+        if (hallOfFame[i].turns != 999) {
+            const char* diffStr = "";
+            if (hallOfFame[i].difficulty == EASY) diffStr = "Easy";
+            else if (hallOfFame[i].difficulty == MEDIUM) diffStr = "Medium";
+            else if (hallOfFame[i].difficulty == HARD) diffStr = "Hard";
+            printf("%2d. %s - %d turns (%s)\n", i + 1, hallOfFame[i].playerName, hallOfFame[i].turns, diffStr);
+            hasScores = 1;
+        }
+    }
+    if (!hasScores) {
+        printf("No scores yet. Be the first!
+");
+    }
+    printf("========================================\n\n");
+}
+
+void updateHallOfFame(char *playerName, int turns, int difficulty) {
+    HighScore newScore = {0};
+    strcpy(newScore.playerName, playerName);
+    newScore.turns = turns;
+    newScore.difficulty = difficulty;
+    newScore.date = time(NULL);
+    
+    int insertPos = -1;
+    for (int i = 0; i < MAX_HALL_OF_FAME; i++) {
+        if (newScore.turns < hallOfFame[i].turns) {
+            insertPos = i;
+            break;
+        }
+    }
+    
+    if (insertPos != -1) {
+        for (int i = MAX_HALL_OF_FAME - 1; i > insertPos; i--) {
+            hallOfFame[i] = hallOfFame[i - 1];
+        }
+        hallOfFame[insertPos] = newScore;
+        printf("\n*** NEW HIGH SCORE! %s ranks #%d in Hall of Fame! ***\n\n", playerName, insertPos + 1);
+        saveHallOfFame();
+    }
+}
+
 int selectDifficulty() {
     int choice;
     showDifficultyMenu();
@@ -63,8 +150,6 @@ int selectDifficulty() {
         printf("Invalid choice. Please enter 1, 2, or 3.\n");
     } while (1);
 }
-
-int selectDifficulty() {
     int difficulty;
     printf("\n===== Select Difficulty Level =====\n");
     printf("1. Easy (More ladders, fewer snakes and traps)\n");
@@ -405,6 +490,7 @@ int checkPowerUp(int *position, PowerUp powerUps[], int currentPlayer, int skipT
 
 int main() {
     srand(time(0));
+    loadHallOfFame();
     int numPlayers;
     char names[MAX_PLAYERS][50];
     int wins[MAX_PLAYERS] = {0};
@@ -414,6 +500,8 @@ int main() {
     showRules();
     int difficulty = selectDifficulty();
 
+    displayHallOfFame();
+    
     int choice;
     do {
         printf("1. New Game\n2. Load Game\nChoose: ");
@@ -558,6 +646,7 @@ int main() {
 
         printf("\n\a%s Wins!\n", names[winner]);
         wins[winner]++;
+        updateHallOfFame(names[winner], turns, difficulty);
         time_t endTime = time(NULL); // Record end time
         double gameDuration = difftime(endTime, startTime); // Calculate duration in seconds
         printf("Game completed in %d turns and %.0f seconds.\n", turns, gameDuration);
