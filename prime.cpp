@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 bool isPrime(int n) {
@@ -9,6 +10,12 @@ bool isPrime(int n) {
         if (n % i == 0 || n % (i + 2) == 0) return false;
     }
     return true;
+}
+
+bool isPerfectSquare(int n) {
+    if (n < 0) return false;
+    int root = sqrt(n);
+    return root * root == n;
 }
 
 int main() {
@@ -91,6 +98,11 @@ int main() {
     
     int primeCount = isPrime(a) + isPrime(b) + isPrime(c);
     cout << "\nTotal PRIME numbers: " << primeCount << " out of 3" << endl;
+    
+    cout << "\n===== PERFECT SQUARE CHECK =====" << endl;
+    cout << a << " is " << (isPerfectSquare(a) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
+    cout << b << " is " << (isPerfectSquare(b) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
+    cout << c << " is " << (isPerfectSquare(c) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
 
     return 0;
 }
