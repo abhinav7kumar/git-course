@@ -67,6 +67,9 @@ int main() {
     cout << a << " is " << (isPrime(a) ? "PRIME" : "NOT PRIME") << endl;
     cout << b << " is " << (isPrime(b) ? "PRIME" : "NOT PRIME") << endl;
     cout << c << " is " << (isPrime(c) ? "PRIME" : "NOT PRIME") << endl;
+    
+    int primeCount = isPrime(a) + isPrime(b) + isPrime(c);
+    cout << "\nTotal PRIME numbers: " << primeCount << " out of 3" << endl;
 
     return 0;
 }
