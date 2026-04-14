@@ -1,6 +1,16 @@
 #include <iostream>
 using namespace std;
 
+bool isPrime(int n) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 == 0 || n % 3 == 0) return false;
+    for (int i = 5; i * i <= n; i += 6) {
+        if (n % i == 0 || n % (i + 2) == 0) return false;
+    }
+    return true;
+}
+
 int main() {
     int a, b, c;
 
@@ -31,13 +41,32 @@ int main() {
     int sum = a + b + c;
     double average = sum / 3.0;
 
-    // Display results
+    // Calculate range
+    int range = largest - smallest;
+
+    // Find middle value (median)
+    int middle;
+    if ((a >= b && a <= c) || (a >= c && a <= b)) {
+        middle = a;
+    } else if ((b >= a && b <= c) || (b >= c && b <= a)) {
+        middle = b;
+    } else {
+        middle = c;
+    }
+
+    // Display results 
     cout << "\n===== ANALYSIS =====" << endl;
     cout << "Numbers: " << a << ", " << b << ", " << c << endl;
     cout << "Largest number: " << largest << endl;
     cout << "Smallest number: " << smallest << endl;
+    cout << "Middle value: " << middle << endl;
     cout << "Sum: " << sum << endl;
     cout << "Average: " << average << endl;
+    cout << "Range: " << range << endl;
+    cout << "\n===== PRIME CHECK =====" << endl;
+    cout << a << " is " << (isPrime(a) ? "PRIME" : "NOT PRIME") << endl;
+    cout << b << " is " << (isPrime(b) ? "PRIME" : "NOT PRIME") << endl;
+    cout << c << " is " << (isPrime(c) ? "PRIME" : "NOT PRIME") << endl;
 
     return 0;
 }
