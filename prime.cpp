@@ -40,6 +40,7 @@ int main() {
     // Calculate sum and average
     int sum = a + b + c;
     double average = sum / 3.0;
+    int product = a * b * c;
 
     // Calculate range
     int range = largest - smallest;
@@ -54,6 +55,10 @@ int main() {
         middle = c;
     }
 
+    // Count even and odd numbers
+    int evenCount = (a % 2 == 0) + (b % 2 == 0) + (c % 2 == 0);
+    int oddCount = 3 - evenCount;
+
     // Display results 
     cout << "\n===== ANALYSIS =====" << endl;
     cout << "Numbers: " << a << ", " << b << ", " << c << endl;
@@ -62,7 +67,9 @@ int main() {
     cout << "Middle value: " << middle << endl;
     cout << "Sum: " << sum << endl;
     cout << "Average: " << average << endl;
+    cout << "Product: " << product << endl;
     cout << "Range: " << range << endl;
+    cout << "Even numbers: " << evenCount << " | Odd numbers: " << oddCount << endl;
     cout << "\n===== PRIME CHECK =====" << endl;
     cout << a << " is " << (isPrime(a) ? "PRIME" : "NOT PRIME") << endl;
     cout << b << " is " << (isPrime(b) ? "PRIME" : "NOT PRIME") << endl;
