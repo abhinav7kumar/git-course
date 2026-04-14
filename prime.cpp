@@ -63,6 +63,13 @@ int main() {
     bool isAscending = (a <= b && b <= c);
     bool isDescending = (a >= b && b >= c);
 
+    // Check for duplicates
+    bool hasDuplicates = (a == b) || (b == c) || (a == c);
+
+    // Check number signs
+    int negativeCount = (a < 0) + (b < 0) + (c < 0);
+    int positiveCount = (a > 0) + (b > 0) + (c > 0);
+
     // Display results 
     cout << "\n===== ANALYSIS =====" << endl;
     cout << "Numbers: " << a << ", " << b << ", " << c << endl;
@@ -75,6 +82,8 @@ int main() {
     cout << "Range: " << range << endl;
     cout << "Even numbers: " << evenCount << " | Odd numbers: " << oddCount << endl;
     cout << "Order: " << (isAscending ? "ASCENDING" : isDescending ? "DESCENDING" : "RANDOM") << endl;
+    cout << "Duplicates: " << (hasDuplicates ? "YES" : "NO") << endl;
+    cout << "Positive: " << positiveCount << " | Negative: " << negativeCount << endl;
     cout << "\n===== PRIME CHECK =====" << endl;
     cout << a << " is " << (isPrime(a) ? "PRIME" : "NOT PRIME") << endl;
     cout << b << " is " << (isPrime(b) ? "PRIME" : "NOT PRIME") << endl;
