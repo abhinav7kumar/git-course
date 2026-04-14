@@ -59,6 +59,10 @@ int main() {
     int evenCount = (a % 2 == 0) + (b % 2 == 0) + (c % 2 == 0);
     int oddCount = 3 - evenCount;
 
+    // Check arrangement order
+    bool isAscending = (a <= b && b <= c);
+    bool isDescending = (a >= b && b >= c);
+
     // Display results 
     cout << "\n===== ANALYSIS =====" << endl;
     cout << "Numbers: " << a << ", " << b << ", " << c << endl;
@@ -70,6 +74,7 @@ int main() {
     cout << "Product: " << product << endl;
     cout << "Range: " << range << endl;
     cout << "Even numbers: " << evenCount << " | Odd numbers: " << oddCount << endl;
+    cout << "Order: " << (isAscending ? "ASCENDING" : isDescending ? "DESCENDING" : "RANDOM") << endl;
     cout << "\n===== PRIME CHECK =====" << endl;
     cout << a << " is " << (isPrime(a) ? "PRIME" : "NOT PRIME") << endl;
     cout << b << " is " << (isPrime(b) ? "PRIME" : "NOT PRIME") << endl;
