@@ -31,6 +31,12 @@ bool areConsecutive(int x, int y, int z) {
     return arr[1] == arr[0] + 1 && arr[2] == arr[1] + 1;
 }
 
+bool isPythagoreanTriple(int x, int y, int z) {
+    int arr[3] = {x, y, z};
+    sort(arr, arr + 3);
+    return arr[0] > 0 && arr[0] * arr[0] + arr[1] * arr[1] == arr[2] * arr[2];
+}
+
 bool canFormTriangle(int x, int y, int z) {
     int arr[3] = {x, y, z};
     sort(arr, arr + 3);
@@ -98,6 +104,7 @@ int main() {
     bool isArithmetic = isArithmeticProgression(a, b, c);
     bool trianglePossible = canFormTriangle(a, b, c);
     bool consecutive = areConsecutive(a, b, c);
+    bool pythagoreanTriple = isPythagoreanTriple(a, b, c);
 
     // Display results 
     cout << "\n===== ANALYSIS =====" << endl;
@@ -113,6 +120,7 @@ int main() {
     cout << "Order: " << (isAscending ? "ASCENDING" : isDescending ? "DESCENDING" : "RANDOM") << endl;
     cout << "Arithmetic progression: " << (isArithmetic ? "YES" : "NO") << endl;
     cout << "Consecutive numbers: " << (consecutive ? "YES" : "NO") << endl;
+    cout << "Pythagorean triple: " << (pythagoreanTriple ? "YES" : "NO") << endl;
     cout << "Triangle possible: " << (trianglePossible ? "YES" : "NO") << endl;
     cout << "Duplicates: " << (hasDuplicates ? "YES" : "NO") << endl;
     cout << "Positive: " << positiveCount << " | Negative: " << negativeCount << endl;
