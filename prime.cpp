@@ -36,6 +36,18 @@ int lcm(int a, int b) {
     return (a / gcd(a, b)) * b;
 }
 
+int countDivisors(int n) {
+    if (n == 0) return 0;
+    n = abs(n);
+    int count = 0;
+    for (int i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            count += (i * i == n) ? 1 : 2;
+        }
+    }
+    return count;
+}
+
 bool isArithmeticProgression(int x, int y, int z) {
     int arr[3] = {x, y, z};
     sort(arr, arr + 3);
@@ -163,5 +175,10 @@ int main() {
     int lcmAll = lcm(a, lcm(b, c));
     cout << "GCD of " << a << ", " << b << ", " << c << " = " << gcdAll << endl;
     cout << "LCM of " << a << ", " << b << ", " << c << " = " << lcmAll << endl;
+
+    cout << "\n===== DIVISOR COUNT ====="  << endl;
+    cout << "Divisors of " << a << ": " << countDivisors(a) << endl;
+    cout << "Divisors of " << b << ": " << countDivisors(b) << endl;
+    cout << "Divisors of " << c << ": " << countDivisors(c) << endl;
     return 0;
 }
