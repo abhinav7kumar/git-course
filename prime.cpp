@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <cstdlib>
 using namespace std;
 
 bool isPrime(int n) {
@@ -17,6 +18,22 @@ bool isPerfectSquare(int n) {
     if (n < 0) return false;
     int root = sqrt(n);
     return root * root == n;
+}
+
+bool isPerfectCube(int n) {
+    if (n == 0) return true;
+    if (n < 0) n = -n;
+    int root = round(cbrt(n));
+    return root * root * root == n;
+}
+
+int gcd(int a, int b) {
+    if (b == 0) return a;
+    return gcd(b, a % b);
+}
+
+int lcm(int a, int b) {
+    return (a / gcd(a, b)) * b;
 }
 
 bool isArithmeticProgression(int x, int y, int z) {
@@ -136,6 +153,15 @@ int main() {
     cout << a << " is " << (isPerfectSquare(a) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
     cout << b << " is " << (isPerfectSquare(b) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
     cout << c << " is " << (isPerfectSquare(c) ? "PERFECT SQUARE" : "NOT A PERFECT SQUARE") << endl;
+    cout << "\n===== PERFECT CUBE CHECK ====="  << endl;
+    cout << a << " is " << (isPerfectCube(a) ? "PERFECT CUBE" : "NOT A PERFECT CUBE") << endl;
+    cout << b << " is " << (isPerfectCube(b) ? "PERFECT CUBE" : "NOT A PERFECT CUBE") << endl;
+    cout << c << " is " << (isPerfectCube(c) ? "PERFECT CUBE" : "NOT A PERFECT CUBE") << endl;
 
+    cout << "\n===== GCD & LCM ====="  << endl;
+    int gcdAll = gcd(a, gcd(b, c));
+    int lcmAll = lcm(a, lcm(b, c));
+    cout << "GCD of " << a << ", " << b << ", " << c << " = " << gcdAll << endl;
+    cout << "LCM of " << a << ", " << b << ", " << c << " = " << lcmAll << endl;
     return 0;
 }
